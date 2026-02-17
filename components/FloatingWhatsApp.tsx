@@ -1,16 +1,17 @@
-
 import React from 'react';
 import { useLanguage } from './LanguageProvider';
 
 const FloatingWhatsApp: React.FC = () => {
   const { lang, region } = useLanguage();
   
-  const phoneNumber = region === 'EG' ? "+201033776986" : "+966500000000";
+  // Clean numbers without + for the API link
+  const rawNumber = region === 'EG' ? "201033776986" : "966500000000";
+  // Display numbers with formatting
   const displayPhone = region === 'EG' ? "+20 103 377 6986" : "+966 50 000 0000";
 
   return (
     <a
-      href={`https://wa.me/${phoneNumber.replace('+', '')}`}
+      href={`https://wa.me/${rawNumber}`}
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-44 end-6 z-[100] group flex items-center gap-3"

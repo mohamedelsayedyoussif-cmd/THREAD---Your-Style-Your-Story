@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageProvider';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -7,6 +6,13 @@ const CategoryChips: React.FC = () => {
   const { lang } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const chips = [
     { ar: 'الأكثر مبيعاً 🏆', en: 'Best Sellers', id: 'best-sellers' },
@@ -16,14 +22,15 @@ const CategoryChips: React.FC = () => {
     { ar: 'من نحن 👕', en: 'About Us', id: 'about' }
   ];
 
-  const handleScroll = (id: string) => {
+  const handleScrollTo = (id: string) => {
     if (location.pathname !== '/') {
       navigate('/', { state: { scrollTo: id } });
       return;
     }
     const element = document.getElementById(id);
     if (element) {
-      const navOffset = 160; 
+      // Calculate offset: Navbar height + AnnouncementBar height
+      const navOffset = isScrolled ? 80 : 130; 
       const bodyRect = document.body.getBoundingClientRect().top;
       const elementRect = element.getBoundingClientRect().top;
       const elementPosition = elementRect - bodyRect;
@@ -37,12 +44,16 @@ const CategoryChips: React.FC = () => {
   };
 
   return (
-    <div className="py-6 md:py-10 overflow-x-auto no-scrollbar flex gap-4 px-4 max-w-7xl mx-auto sticky top-9 md:top-12 z-[100] bg-dark-950/80 backdrop-blur-xl border-y border-white/5">
+    <div 
+      className={`py-6 md:py-8 overflow-x-auto no-scrollbar flex gap-3 px-4 max-w-7xl mx-auto sticky z-[100] transition-all duration-300 border-y border-white/5 bg-white/80 dark:bg-dark-950/80 backdrop-blur-xl ${
+        isScrolled ? 'top-16 md:top-20' : 'top-[100px] md:top-[116px]'
+      }`}
+    >
       {chips.map((chip, idx) => (
         <button
           key={idx}
-          onClick={() => handleScroll(chip.id)}
-          className="whitespace-nowrap px-8 py-4 glass rounded-2xl border-white/10 text-[10px] md:text-xs font-black uppercase tracking-widest hover:bg-primary hover:text-dark-900 transition-all active:scale-95 shadow-xl hover:shadow-primary/20"
+          onClick={() => handleScrollTo(chip.id)}
+          className="whitespace-nowrap px-6 py-3 glass rounded-2xl border-white/10 text-[9px] md:text-[11px] font-black uppercase tracking-widest hover:bg-primary hover:text-white dark:hover:text-dark-900 transition-all active:scale-95 shadow-sm hover:shadow-primary/20"
         >
           {lang === 'ar' ? chip.ar : chip.en}
         </button>

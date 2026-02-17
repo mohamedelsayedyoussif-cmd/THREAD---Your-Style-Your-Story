@@ -1,104 +1,440 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl" class="scroll-smooth dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>THREAD | ELEVATE YOUR STYLE ⚡</title>
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Bebas+Neue&family=Inter:wght@100..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            colors: {
-              primary: {
-                DEFAULT: '#FF4D00', // Neon Orange
-                dark: '#CC3D00',
-              },
-              accent: {
-                DEFAULT: '#00f2ff',
-                neon: '#00f2ff',
-              },
-              dark: {
-                800: '#1a1a1a',
-                900: '#0a0a0a',
-                950: '#050505',
-              }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>THREAD | ELEVATE YOUR STYLE ⚡</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Bebas+Neue&family=Inter:wght@100..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#FF4D00',
+              50: '#FFF1EB',
+              100: '#FFE1D6',
+              200: '#FFC1AD',
+              300: '#FFA085',
+              400: '#FF805C',
+              500: '#FF4D00',
+              600: '#D64100',
+              700: '#AD3500',
+              800: '#852800',
+              900: '#5C1C00',
             },
-            fontFamily: {
-              heading: ['"Bebas Neue"', 'Cairo', 'sans-serif'],
-              body: ['Cairo', 'Inter', 'sans-serif'],
-              display: ['"Space Grotesk"', 'sans-serif'],
+            dark: {
+              950: '#050505',
+              900: '#0A0A0A',
+              800: '#111111',
+              700: '#1A1A1A',
             },
+            accent: {
+              neon: '#CCFF00',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'Cairo', 'ui-sans-serif', 'system-ui'],
+            heading: ['Bebas Neue', 'Cairo', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+          },
+          animation: {
+            'marquee': 'marquee 40s linear infinite',
+            'fade-in': 'fade-in 0.6s ease-out forwards',
+          },
+          keyframes: {
+            marquee: {
+              '0%': { transform: 'translateX(0)' },
+              '100%': { transform: 'translateX(-50%)' },
+            },
+            'fade-in': { 'from': { opacity: '0' }, 'to': { opacity: '1' } },
           }
         }
       }
-    </script>
+    }
+  </script>
 
-    <link rel="stylesheet" href="style.css">
+  <!-- Custom CSS -->
+  <style type="text/tailwindcss">
+    @layer base {
+      :root { --primary: #FF4D00; }
+      html { -webkit-tap-highlight-color: transparent; }
+      body {
+        @apply bg-white text-dark-950 dark:bg-dark-950 dark:text-white transition-colors duration-500 antialiased overflow-x-hidden min-h-screen;
+        font-family: 'Cairo', 'Inter', sans-serif;
+      }
+      h1, h2, h3, h4, .font-heading { font-family: 'Bebas Neue', 'Cairo', sans-serif; @apply uppercase tracking-tighter italic; }
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { @apply bg-gray-100 dark:bg-dark-950; }
+      ::-webkit-scrollbar-thumb { @apply bg-primary/60 hover:bg-primary rounded-full; }
+    }
+    @layer components {
+      .glass { @apply bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10; backdrop-filter: blur(12px); }
+      .text-outline { -webkit-text-stroke: 1px rgba(0,0,0,0.15); color: transparent; }
+      .dark .text-outline { -webkit-text-stroke: 1px rgba(255,255,255,0.2); }
+      .btn-brutal { @apply relative overflow-hidden transition-all duration-300 active:scale-95 hover:shadow-[0_0_30px_rgba(255,77,0,0.4)]; }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    }
+    .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+    .pt-safe { padding-top: env(safe-area-inset-top); }
+  </style>
 
-    <script>
-      window.process = { 
-        env: { 
-          NODE_ENV: 'production',
-          API_KEY: '' 
-        } 
-      };
-    </script>
-
-    <script type="importmap">
+  <!-- React & Libraries (Corrected Order & Versions) -->
+  <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js" crossorigin></script>
+  
+  <!-- React Router Dependencies (Must be loaded in this order) -->
+  <script src="https://unpkg.com/history@5.3.0/umd/history.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.production.min.js" crossorigin></script>
+  
+  <!-- Babel -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="importmap">
 {
   "imports": {
-    "react": "https://esm.sh/react@19.0.0",
-    "react-dom": "https://esm.sh/react-dom@19.0.0",
-    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
-    "react-router-dom": "https://esm.sh/react-router-dom@6.28.0?external=react,react-dom",
-    "@google/genai": "https://esm.sh/@google/genai",
+    "react": "https://esm.sh/react@^19.2.4",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "react/": "https://esm.sh/react@^19.2.4/"
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.41.0"
   }
 }
 </script>
-    
-    <style type="text/tailwindcss">
-      @layer base {
-        body {
-          @apply bg-white text-dark-950 dark:bg-dark-950 dark:text-white transition-colors duration-500 selection:bg-primary selection:text-white overflow-x-hidden;
-          font-family: 'Cairo', 'Inter', sans-serif;
-        }
-        
-        h1, h2, h3, .heading-style {
-          font-family: 'Bebas Neue', 'Cairo', sans-serif;
-          @apply uppercase tracking-tighter italic;
-        }
-        
-        [lang="en"] body {
-          font-family: 'Inter', sans-serif;
-        }
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- Main Application Script -->
+  <script type="text/babel">
+    const { useState, useEffect, createContext, useContext, useMemo, useRef } = React;
+    const { HashRouter, Routes, Route, Link, useLocation, useNavigate, useParams } = ReactRouterDOM;
+
+    // --- DATA ---
+    const SITE_IMAGES = {
+      hero: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&q=80&w=1920',
+      contact: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=1000'
+    };
+
+    const PRODUCTS = [
+      {
+        id: 1, slug: 'oversized-hoodie-black', gender: 'men', category: 'clothing',
+        nameAr: 'Oversized Hoodie - Black', nameEn: 'Oversized Hoodie - Black',
+        price: 399, priceSAR: 45, rating: 4.7, badgeAr: 'خصم 20%', badgeEn: '20% OFF',
+        descriptionAr: 'هودي oversized قطن 100%، تصميم عصري، مريح للاستخدام اليومي.',
+        descriptionEn: '100% cotton oversized hoodie, modern design.',
+        colors: [{ id: 'black', nameAr: 'أسود', nameEn: 'Black', hex: '#000000', images: ['https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=800'] }],
+        sizes: ['S', 'M', 'L', 'XL'], tags: ['Best Seller']
+      },
+      {
+        id: 2, slug: 'essential-tshirt', gender: 'men', category: 'clothing',
+        nameAr: 'تيشيرت أساسي أبيض', nameEn: 'Essential T-Shirt',
+        price: 299, priceSAR: 35, rating: 4.9, badgeAr: 'الأكثر مبيعاً', badgeEn: 'Best Seller',
+        descriptionAr: 'تيشيرت قطن بريميوم.', descriptionEn: 'Premium cotton t-shirt.',
+        colors: [{ id: 'white', nameAr: 'أبيض', nameEn: 'White', hex: '#FFFFFF', images: ['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800'] }],
+        sizes: ['M', 'L', 'XL'], tags: ['Best Seller']
+      },
+      {
+        id: 5, slug: 'oversized-sweater', gender: 'women', category: 'clothing',
+        nameAr: 'سويتر بيج واسع', nameEn: 'Oversized Sweater Beige',
+        price: 349, priceSAR: 40, rating: 4.8, badgeAr: 'جديد', badgeEn: 'New',
+        descriptionAr: 'سويتر ناعم ومريح.', descriptionEn: 'Soft and cozy sweater.',
+        colors: [{ id: 'beige', nameAr: 'بيج', nameEn: 'Beige', hex: '#F5F5DC', images: ['https://images.unsplash.com/photo-1434389677669-e08b4cac3105?q=80&w=800'] }],
+        sizes: ['S', 'M', 'L'], tags: ['New Arrival']
+      },
+      {
+        id: 4, slug: 'cargo-pants', gender: 'men', category: 'clothing',
+        nameAr: 'بنطلون كارجو', nameEn: 'Cargo Pants',
+        price: 379, priceSAR: 42, rating: 4.5,
+        descriptionAr: 'بنطلون كارجو عملي.', descriptionEn: 'Tactical cargo pants.',
+        colors: [{ id: 'khaki', nameAr: 'خاكي', nameEn: 'Khaki', hex: '#C3B091', images: ['https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?q=80&w=800'] }],
+        sizes: ['30', '32', '34'], tags: ['Streetwear']
       }
-      @layer components {
-        .glass {
-          @apply bg-white/80 dark:bg-white/5 backdrop-blur-xl border border-dark-950/10 dark:border-white/10;
-        }
-        .text-glow {
-          @apply dark:drop-shadow-[0_0_15px_rgba(255,77,0,0.5)];
-        }
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="./index.tsx"></script>
-  </body>
+    ];
+
+    // --- CONTEXTS ---
+    const LanguageContext = createContext();
+    const CartContext = createContext();
+
+    const LanguageProvider = ({ children }) => {
+      const [lang, setLang] = useState('ar');
+      const [region, setRegion] = useState('EG');
+      const [isDark, setIsDark] = useState(true);
+
+      useEffect(() => {
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        if (isDark) document.documentElement.classList.add('dark');
+        else document.documentElement.classList.remove('dark');
+      }, [lang, isDark]);
+
+      return (
+        <LanguageContext.Provider value={{ lang, setLang, region, setRegion, isDark, setIsDark }}>
+          {children}
+        </LanguageContext.Provider>
+      );
+    };
+
+    const CartProvider = ({ children }) => {
+      const [cart, setCart] = useState([]);
+      const addToCart = (product, color, size, quantity) => {
+        const id = `${product.id}-${color.id}-${size}`;
+        setCart(prev => {
+          const exists = prev.find(i => i.id === id);
+          if (exists) return prev.map(i => i.id === id ? { ...i, quantity: i.quantity + quantity } : i);
+          return [...prev, { id, product, selectedColor: color, selectedSize: size, quantity }];
+        });
+      };
+      const removeFromCart = (id) => setCart(prev => prev.filter(i => i.id !== id));
+      const totalItems = cart.reduce((acc, i) => acc + i.quantity, 0);
+      return (
+        <CartContext.Provider value={{ cart, addToCart, removeFromCart, totalItems }}>
+          {children}
+        </CartContext.Provider>
+      );
+    };
+
+    // --- COMPONENTS ---
+    const Navbar = () => {
+      const { lang, setLang, isDark, setIsDark } = useContext(LanguageContext);
+      const { totalItems } = useContext(CartContext);
+      const [scrolled, setScrolled] = useState(false);
+      const navigate = useNavigate();
+
+      useEffect(() => {
+        const handler = () => setScrolled(window.scrollY > 20);
+        window.addEventListener('scroll', handler);
+        return () => window.removeEventListener('scroll', handler);
+      }, []);
+
+      return (
+        <header className={`fixed top-0 left-0 right-0 z-50 transition-all ${scrolled ? 'py-2' : 'py-4'}`}>
+          <nav className="max-w-7xl mx-auto px-4">
+            <div className="glass rounded-2xl px-6 py-3 flex items-center justify-between border-primary/10">
+              <Link to="/" className="text-2xl font-black italic tracking-tighter flex items-center gap-2">
+                <span className="bg-primary text-white px-2 rounded">T</span>
+                <span className="text-dark-950 dark:text-white hidden sm:block">THREAD</span>
+              </Link>
+              <div className="flex items-center gap-4">
+                <button onClick={() => setIsDark(!isDark)} className="p-2 rounded-lg hover:bg-white/5">
+                  {isDark ? '☀️' : '🌙'}
+                </button>
+                <button onClick={() => setLang(lang === 'ar' ? 'en' : 'ar')} className="font-bold text-xs uppercase border px-2 py-1 rounded">
+                  {lang === 'ar' ? 'EN' : 'عربي'}
+                </button>
+                <Link to="/cart" className="relative p-2">
+                  <span className="text-xl">🛒</span>
+                  {totalItems > 0 && <span className="absolute -top-1 -right-1 bg-primary text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">{totalItems}</span>}
+                </Link>
+              </div>
+            </div>
+          </nav>
+        </header>
+      );
+    };
+
+    const Hero = () => {
+      const { lang } = useContext(LanguageContext);
+      return (
+        <section className="relative min-h-screen flex items-center justify-center bg-dark-950 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url('${SITE_IMAGES.hero}')` }}>
+          <div className="absolute inset-0 bg-black/60"></div>
+          <div className="relative z-10 text-center px-4 space-y-8">
+            <span className="bg-primary text-white px-4 py-1 text-xs font-black uppercase tracking-[0.4em] italic inline-block skew-x-[-10deg]">
+              {lang === 'ar' ? 'كولكشن جديد' : 'NEW DROP'}
+            </span>
+            <h1 className="text-7xl md:text-9xl font-black text-white italic uppercase tracking-tighter leading-none">
+              THREAD<br/><span className="text-outline">STREETWEAR</span>
+            </h1>
+            <div className="flex justify-center gap-4">
+              <Link to="/collections" className="bg-primary text-white px-10 py-4 rounded-xl font-black uppercase tracking-widest hover:scale-105 transition-transform">
+                {lang === 'ar' ? 'تسوق الآن' : 'SHOP NOW'}
+              </Link>
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+    const ProductCard = ({ product }) => {
+      const { lang, region } = useContext(LanguageContext);
+      const navigate = useNavigate();
+      const price = region === 'EG' ? product.price : product.priceSAR;
+      const currency = region === 'EG' ? 'EGP' : 'SAR';
+
+      return (
+        <div onClick={() => navigate(`/product/${product.id}`)} className="group cursor-pointer space-y-3">
+          <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-gray-100 dark:bg-dark-900 border border-transparent group-hover:border-primary/50 transition-all">
+            <img src={product.colors[0].images[0]} alt={product.nameEn} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+            {product.badgeEn && <span className="absolute top-3 left-3 bg-primary text-white text-[10px] font-black px-2 py-1 uppercase">{lang === 'ar' ? product.badgeAr : product.badgeEn}</span>}
+          </div>
+          <div>
+            <h3 className="font-bold text-dark-950 dark:text-white uppercase italic truncate">{lang === 'ar' ? product.nameAr : product.nameEn}</h3>
+            <p className="text-primary font-black">{price} {currency}</p>
+          </div>
+        </div>
+      );
+    };
+
+    const Footer = () => {
+      const { lang } = useContext(LanguageContext);
+      return (
+        <footer className="bg-dark-950 text-white py-12 px-4 border-t border-white/5 mt-20">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <h2 className="text-3xl font-black italic text-primary">THREAD</h2>
+            <p className="text-gray-500 text-sm">© 2024 THREAD. All rights reserved.</p>
+          </div>
+        </footer>
+      );
+    };
+
+    // --- PAGES ---
+    const HomePage = () => {
+      const { lang } = useContext(LanguageContext);
+      return (
+        <div>
+          <Hero />
+          <section className="py-20 px-4 max-w-7xl mx-auto">
+            <h2 className="text-4xl font-black text-dark-950 dark:text-white mb-10 italic uppercase">{lang === 'ar' ? 'الأكثر مبيعاً' : 'BEST SELLERS'}</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {PRODUCTS.map(p => <ProductCard key={p.id} product={p} />)}
+            </div>
+          </section>
+        </div>
+      );
+    };
+
+    const Collections = () => {
+      const { lang } = useContext(LanguageContext);
+      return (
+        <div className="pt-32 pb-20 px-4 max-w-7xl mx-auto min-h-screen">
+          <h1 className="text-5xl font-black text-dark-950 dark:text-white mb-10 italic uppercase">{lang === 'ar' ? 'المنتجات' : 'COLLECTIONS'}</h1>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {PRODUCTS.map(p => <ProductCard key={p.id} product={p} />)}
+          </div>
+        </div>
+      );
+    };
+
+    const ProductDetail = () => {
+      const { id } = useParams();
+      const { lang, region } = useContext(LanguageContext);
+      const { addToCart } = useContext(CartContext);
+      const product = PRODUCTS.find(p => p.id === Number(id));
+      const [size, setSize] = useState('');
+      
+      if (!product) return <div className="pt-32 text-center text-white">Product not found</div>;
+
+      return (
+        <div className="pt-32 pb-20 px-4 max-w-7xl mx-auto min-h-screen">
+          <div className="grid md:grid-cols-2 gap-12">
+            <div className="aspect-[3/4] rounded-3xl overflow-hidden glass">
+              <img src={product.colors[0].images[0]} className="w-full h-full object-cover" />
+            </div>
+            <div className="space-y-8">
+              <div>
+                <h1 className="text-4xl md:text-6xl font-black text-dark-950 dark:text-white italic uppercase">{lang === 'ar' ? product.nameAr : product.nameEn}</h1>
+                <p className="text-3xl text-primary font-black mt-2">{region === 'EG' ? product.price : product.priceSAR} {region === 'EG' ? 'EGP' : 'SAR'}</p>
+              </div>
+              <p className="text-gray-500 text-lg leading-relaxed">{lang === 'ar' ? product.descriptionAr : product.descriptionEn}</p>
+              
+              <div className="space-y-4">
+                <span className="font-bold text-dark-950 dark:text-white uppercase tracking-widest text-xs">Size</span>
+                <div className="flex gap-3">
+                  {product.sizes.map(s => (
+                    <button key={s} onClick={() => setSize(s)} className={`w-12 h-12 rounded-lg border-2 font-bold ${size === s ? 'border-primary bg-primary text-white' : 'border-gray-200 dark:border-white/10 text-gray-500'}`}>
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button 
+                onClick={() => {
+                  if(size) {
+                    addToCart(product, product.colors[0], size, 1);
+                    alert(lang === 'ar' ? 'تمت الإضافة للسلة' : 'Added to Cart');
+                  } else {
+                    alert(lang === 'ar' ? 'اختر المقاس أولاً' : 'Select Size First');
+                  }
+                }}
+                className="w-full bg-primary text-white py-5 rounded-xl font-black uppercase tracking-widest hover:opacity-90 transition-opacity">
+                {lang === 'ar' ? 'أضف للسلة' : 'ADD TO CART'}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const Cart = () => {
+      const { cart, removeFromCart } = useContext(CartContext);
+      const { lang, region } = useContext(LanguageContext);
+      const total = cart.reduce((acc, item) => acc + (region === 'EG' ? item.product.price : item.product.priceSAR) * item.quantity, 0);
+
+      return (
+        <div className="pt-32 pb-20 px-4 max-w-4xl mx-auto min-h-screen">
+          <h1 className="text-4xl font-black text-dark-950 dark:text-white mb-10 italic uppercase">{lang === 'ar' ? 'السلة' : 'YOUR BAG'}</h1>
+          {cart.length === 0 ? (
+            <p className="text-gray-500 italic">Empty...</p>
+          ) : (
+            <div className="space-y-4">
+              {cart.map(item => (
+                <div key={item.id} className="glass p-4 rounded-2xl flex gap-4 items-center">
+                  <img src={item.selectedColor.images[0]} className="w-20 h-24 rounded-lg object-cover" />
+                  <div className="flex-1">
+                    <h3 className="font-bold text-dark-950 dark:text-white">{lang === 'ar' ? item.product.nameAr : item.product.nameEn}</h3>
+                    <p className="text-xs text-gray-500">{item.selectedSize} | x{item.quantity}</p>
+                    <p className="text-primary font-bold">{region === 'EG' ? item.product.price : item.product.priceSAR} {region === 'EG' ? 'EGP' : 'SAR'}</p>
+                  </div>
+                  <button onClick={() => removeFromCart(item.id)} className="text-red-500 font-bold text-xs uppercase">REMOVE</button>
+                </div>
+              ))}
+              <div className="glass p-6 rounded-2xl mt-8 flex justify-between items-center">
+                <span className="font-black text-xl text-dark-950 dark:text-white">TOTAL</span>
+                <span className="font-black text-3xl text-primary">{total} {region === 'EG' ? 'EGP' : 'SAR'}</span>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    // --- APP ---
+    const App = () => {
+      return (
+        <LanguageProvider>
+          <CartProvider>
+            <Navbar />
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/collections" element={<Collections />} />
+              <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/cart" element={<Cart />} />
+            </Routes>
+            <Footer />
+          </CartProvider>
+        </LanguageProvider>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(
+      <HashRouter>
+        <App />
+      </HashRouter>
+    );
+  </script>
+</body>
 </html>

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLanguage } from '../components/LanguageProvider';
 
@@ -18,9 +17,10 @@ const Newsletter: React.FC = () => {
   return (
     <section className="py-24 px-4">
       <div className="max-w-5xl mx-auto glass p-12 rounded-[3.5rem] border-white/5 text-center space-y-8 relative overflow-hidden">
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
+        {/* Decorative circle with RTL fix class */}
+        <div className="absolute bottom-0 newsletter-circle w-96 h-96 bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
         
-        <div className="space-y-4">
+        <div className="relative z-10 space-y-4">
           <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter">
             {lang === 'ar' ? 'خصم 10% على أول طلب 💌' : '10% OFF YOUR FIRST ORDER 💌'}
           </h2>
@@ -29,7 +29,7 @@ const Newsletter: React.FC = () => {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
+        <form onSubmit={handleSubmit} className="relative z-10 max-w-md mx-auto flex flex-col sm:flex-row gap-4">
           <input
             type="email"
             required
@@ -40,7 +40,7 @@ const Newsletter: React.FC = () => {
           />
           <button
             type="submit"
-            className="bg-primary text-dark-900 px-10 py-4 rounded-2xl font-black uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-primary/20"
+            className="bg-primary text-white dark:text-dark-900 px-10 py-4 rounded-2xl font-black uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-primary/20"
           >
             {submitted ? '✅' : (lang === 'ar' ? 'خد الخصم' : 'GET DISCOUNT')}
           </button>

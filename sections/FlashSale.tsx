@@ -4,7 +4,7 @@ import { useLanguage } from '../components/LanguageProvider';
 
 const FlashSale: React.FC = () => {
   const { lang } = useLanguage();
-  const [timeLeft, setTimeLeft] = useState({ hrs: 2, min: 45, sec: 12 });
+  const [timeLeft, setTimeLeft] = useState({ hrs: 12, min: 30, sec: 0 });
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -28,36 +28,36 @@ const FlashSale: React.FC = () => {
   const format = (n: number) => n.toString().padStart(2, '0');
 
   return (
-    <section id="flash-sale" className="py-12 px-4 bg-primary text-dark-900 overflow-hidden relative">
-      <div className="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-        <div className="space-y-3 text-center md:text-start">
-          <div className="inline-block bg-dark-900 text-primary px-3 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest">
-            Flash Sale ⚡
+    <section id="flash-sale" className="py-24 bg-primary overflow-hidden relative skew-y-[-2deg]">
+      <div className="skew-y-[2deg]">
+        <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
+          <div className="text-[30rem] font-black italic text-black whitespace-nowrap -translate-x-1/4 select-none">
+            LIMITED EDITION • LIMITED EDITION
           </div>
-          <h2 className="text-4xl md:text-5xl font-black uppercase italic tracking-tighter leading-none font-heading">
-            {lang === 'ar' ? 'أقوى عروض الموسم' : 'BEST DEALS'}
-          </h2>
-          <p className="text-lg font-bold italic opacity-80">
-            {lang === 'ar' ? 'خصومات لـ 40% لفترة محدودة' : 'Up to 40% OFF limited time'}
-          </p>
         </div>
 
-        <div className="flex flex-col items-center gap-4">
-          <div className="flex gap-3">
-             {[
-               { val: format(timeLeft.hrs), label: lang === 'ar' ? 'ساعة' : 'Hrs' },
-               { val: format(timeLeft.min), label: lang === 'ar' ? 'دقيقة' : 'Min' },
-               { val: format(timeLeft.sec), label: lang === 'ar' ? 'ثانية' : 'Sec' }
-             ].map((t, i) => (
-               <div key={i} className="bg-dark-900 text-white p-3 rounded-xl min-w-[60px] text-center shadow-lg">
-                  <span className="block text-xl font-black font-price">{t.val}</span>
-                  <span className="text-[8px] uppercase font-bold opacity-60">{t.label}</span>
-               </div>
-             ))}
+        <div className="max-w-7xl mx-auto px-4 relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
+          <div className="space-y-4 text-center md:text-start">
+            <h2 className="text-6xl md:text-9xl font-heading text-black italic tracking-tighter leading-[0.8]">
+              {lang === 'ar' ? 'عرض الـ 24 ساعة ⚡' : '24H INSANE DROP ⚡'}
+            </h2>
+            <p className="text-black/80 text-xl font-bold italic uppercase tracking-widest">
+              {lang === 'ar' ? 'خصومات تصل إلى 50% - لا تنم.' : 'Up to 50% off - Don\'t sleep.'}
+            </p>
           </div>
-          <button className="bg-dark-900 text-white px-8 py-3.5 rounded-xl font-black text-base hover:scale-105 transition-all shadow-xl uppercase tracking-wider">
-            {lang === 'ar' ? 'تسوق العرض 🔥' : 'GRAB DEALS 🔥'}
-          </button>
+
+          <div className="bg-black p-10 flex gap-6 items-center shadow-[20px_20px_0_0_rgba(0,0,0,0.2)]">
+            {[
+              { v: format(timeLeft.hrs), l: 'HR' },
+              { v: format(timeLeft.min), l: 'MIN' },
+              { v: format(timeLeft.sec), l: 'SEC' }
+            ].map((t, i) => (
+              <div key={i} className="flex flex-col items-center">
+                <span className="text-5xl md:text-7xl font-price font-black text-primary tabular-nums">{t.v}</span>
+                <span className="text-[10px] font-black text-white/40 tracking-[0.2em]">{t.l}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

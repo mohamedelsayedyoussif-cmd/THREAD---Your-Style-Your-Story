@@ -47,7 +47,7 @@ const ScrollManager = () => {
       setTimeout(() => {
         const element = document.getElementById(id);
         if (element) {
-          const navOffset = 130; 
+          const navOffset = window.scrollY > 20 ? 80 : 130; 
           const bodyRect = document.body.getBoundingClientRect().top;
           const elementRect = element.getBoundingClientRect().top;
           const elementPosition = elementRect - bodyRect;
@@ -74,67 +74,79 @@ const HomePage: React.FC<{ onQuickView: (p: Product) => void }> = ({ onQuickView
   const menSection = PRODUCTS.filter(p => p.gender === 'men');
   const womenSection = PRODUCTS.filter(p => p.gender === 'women');
 
-  // Unified Section Heading Class - Scaled down for elegance
-  const sectionHeadingClass = "text-3xl md:text-5xl font-black mb-10 uppercase italic tracking-tighter font-heading text-dark-950 dark:text-white text-glow";
+  const sectionHeadingClass = "text-4xl md:text-6xl font-black mb-12 uppercase italic tracking-tighter font-heading text-dark-950 dark:text-white text-glow text-center md:text-start";
 
   return (
     <div className="flex flex-col">
+      {/* 1. Hero Section - The Hook */}
       <Hero />
-      <TrustBar />
+      
+      {/* 2. Navigation Layer - Immediate Path to Purchase */}
       <CategoryChips />
       
-      <section id="best-sellers" className="py-16 px-4 scroll-mt-[180px]">
+      {/* 3. Social Proof & Trust - Credibility Boost */}
+      <TrustBar />
+
+      {/* 4. Best Sellers - Direct Conversion */}
+      <section id="best-sellers" className="py-20 px-4 scroll-mt-[180px]">
         <div className="max-w-7xl mx-auto">
-          <h2 className={sectionHeadingClass}>
-            {lang === 'ar' ? 'الأكثر مبيعاً 🔥' : 'Best Sellers 🔥'}
-          </h2>
+          <div className="flex justify-between items-end mb-12">
+            <h2 className={sectionHeadingClass.replace('mb-12', 'mb-0')}>
+              {lang === 'ar' ? 'الأكثر مبيعاً 🔥' : 'Best Sellers 🔥'}
+            </h2>
+            <button className="text-primary font-black uppercase tracking-widest text-[10px] hover:underline mb-2">
+              {lang === 'ar' ? 'عرض الكل' : 'VIEW ALL'}
+            </button>
+          </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
             {bestSellers.map(p => <ProductCard key={p.id} product={p} onQuickView={onQuickView} />)}
           </div>
         </div>
       </section>
 
+      {/* 5. Urgency Section - Flash Sale */}
       <FlashSale />
 
-      <section id="men" className="py-16 px-4 bg-gray-50 dark:bg-dark-900 scroll-mt-[180px]">
+      {/* 6. Collections - Gender Segregation */}
+      <section id="men" className="py-20 px-4 bg-gray-50 dark:bg-dark-900/40 scroll-mt-[180px]">
         <div className="max-w-7xl mx-auto">
           <h2 className={sectionHeadingClass}>
-            {lang === 'ar' ? 'قسم الرجال 👟' : 'Men Section 👟'}
+            {lang === 'ar' ? 'تشكيلة الرجال 👟' : 'Men\'s Vault 👟'}
           </h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-            {menSection.map(p => <ProductCard key={p.id} product={p} onQuickView={onQuickView} />)}
+            {menSection.slice(0, 4).map(p => <ProductCard key={p.id} product={p} onQuickView={onQuickView} />)}
           </div>
         </div>
       </section>
 
-      <section id="new" className="py-16 px-4 scroll-mt-[180px]">
-        <div className="max-w-7xl mx-auto">
-          <h2 className={sectionHeadingClass}>
-            {lang === 'ar' ? 'وصل حديثاً ✨' : 'New Drops ✨'}
-          </h2>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-            {newArrivals.map(p => <ProductCard key={p.id} product={p} onQuickView={onQuickView} />)}
-          </div>
-        </div>
-      </section>
-
-      <section id="women" className="py-16 px-4 bg-gray-50 dark:bg-dark-900 scroll-mt-[180px]">
-        <div className="max-w-7xl mx-auto">
-          <h2 className={sectionHeadingClass}>
-            {lang === 'ar' ? 'قسم النساء 👗' : 'Women Section 👗'}
-          </h2>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-            {womenSection.map(p => <ProductCard key={p.id} product={p} onQuickView={onQuickView} />)}
-          </div>
-        </div>
-      </section>
-
+      {/* 7. Interactive Engagement - Style Quiz */}
       <StyleQuiz />
+
+      <section id="women" className="py-20 px-4 scroll-mt-[180px]">
+        <div className="max-w-7xl mx-auto">
+          <h2 className={sectionHeadingClass}>
+            {lang === 'ar' ? 'تشكيلة النساء 👗' : 'Women\'s Edit 👗'}
+          </h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+            {womenSection.slice(0, 4).map(p => <ProductCard key={p.id} product={p} onQuickView={onQuickView} />)}
+          </div>
+        </div>
+      </section>
+
+      {/* 8. Brand Connection - The Story */}
       <div id="about" className="scroll-mt-[180px]"><AboutStory /></div>
+      
+      {/* 9. Unique Selling Points */}
       <WhyUs />
+
+      {/* 10. Validating the Brand - Reviews */}
       <div id="reviews" className="scroll-mt-[180px]"><ReviewsUGC /></div>
+      
       <SizeGuide />
+      
+      {/* 11. Final Hook - Newsletter */}
       <Newsletter />
+      
       <PaymentMethods />
       <div id="faq" className="scroll-mt-[180px]"><FAQ /></div>
       <Contact />
@@ -159,7 +171,7 @@ const AppContent = () => {
       <AnnouncementBar />
       <Navbar />
       <ScrollManager />
-      <main className="relative z-10 pb-20 lg:pb-0">
+      <main className="relative z-10 pb-20 lg:pb-0 pt-safe">
         <Routes>
           <Route path="/" element={<HomePage onQuickView={setQuickViewProduct} />} />
           <Route path="/collections" element={<Collections products={PRODUCTS} onQuickView={setQuickViewProduct} />} />

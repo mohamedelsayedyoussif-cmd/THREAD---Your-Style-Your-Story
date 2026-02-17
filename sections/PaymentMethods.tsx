@@ -1,11 +1,16 @@
-
 import React from 'react';
 import { useLanguage } from '../components/LanguageProvider';
 
-const PaymentMethods: React.FC = () => {
-  const { lang, region } = useLanguage();
+interface PaymentMethod {
+  name: string;
+  logo?: string;
+  icon?: string;
+}
 
-  const methods = [
+const PaymentMethods: React.FC = () => {
+  const { lang } = useLanguage();
+
+  const methods: PaymentMethod[] = [
     { name: 'Visa', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg' },
     { name: 'Mastercard', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg' },
     { name: 'Meeza', logo: 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Meeza_logo.svg' },
