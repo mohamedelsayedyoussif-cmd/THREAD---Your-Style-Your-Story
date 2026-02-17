@@ -46,16 +46,11 @@ const AIAssistant: React.FC = () => {
         5. Keep it short and punchy with lots of emojis.
       `;
 
-      const chatHistory = messages.map(m => ({
-        role: m.role,
-        parts: [{ text: m.text }]
-      }));
-
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
         contents: [
           { role: 'user', parts: [{ text: systemInstruction }] },
-          ...chatHistory,
+          ...messages.map(m => ({ role: m.role, parts: [{ text: m.text }] })),
           { role: 'user', parts: [{ text: userMessage }] }
         ],
       });
@@ -72,7 +67,6 @@ const AIAssistant: React.FC = () => {
   if (!isOpen) {
     return (
       <div className="fixed bottom-24 right-6 z-[100] flex items-center group">
-        {/* Tooltip on Hover */}
         <div className="absolute right-full mr-4 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none translate-x-4 group-hover:translate-x-0">
           <div className="glass px-4 py-2 rounded-xl border-primary/30 whitespace-nowrap">
              <span className="text-primary font-black italic tracking-tighter text-xs">
@@ -81,23 +75,16 @@ const AIAssistant: React.FC = () => {
           </div>
         </div>
 
-        {/* New Badge Shape (Diamond) */}
         <button
           onClick={() => setIsOpen(true)}
-          className="relative w-16 h-16 bg-dark-950 text-primary flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-500 shadow-[0_0_40px_rgba(0,242,255,0.3)] group border-2 border-primary overflow-visible rounded-2xl rotate-45"
+          className="relative w-16 h-16 bg-dark-950 text-primary flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-500 shadow-[0_0_40px_rgba(0,242,255,0.3)] group border-2 border-primary rounded-2xl rotate-45 overflow-visible"
         >
-          {/* Inner Content (Counter-rotated back to 0) */}
           <div className="-rotate-45 flex flex-col items-center justify-center relative">
-            <span className="text-2xl drop-shadow-[0_0_10px_rgba(0,242,255,0.8)] animate-pulse">🕶️</span>
-            
-            {/* Live Indicator Dot */}
+            <span className="text-2xl drop-shadow-[0_0_10px_rgba(0,242,255,0.8)]">🕶️</span>
             <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent-neon rounded-full border-2 border-dark-950">
                <div className="absolute inset-0 bg-accent-neon rounded-full animate-ping opacity-75" />
             </div>
           </div>
-
-          {/* Glitch Overlay Effect on Hover */}
-          <div className="absolute inset-0 border-2 border-accent-neon opacity-0 group-hover:opacity-100 group-hover:animate-ping rounded-2xl pointer-events-none" />
         </button>
       </div>
     );
@@ -114,9 +101,7 @@ const AIAssistant: React.FC = () => {
           </div>
         </div>
         <button onClick={() => setIsOpen(false)} className="hover:rotate-90 transition-transform p-2 bg-dark-950/10 rounded-full">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-            <path d="M18 6L6 18M6 6l12 12" />
-          </svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M18 6L6 18M6 6l12 12" /></svg>
         </button>
       </div>
 
@@ -125,21 +110,11 @@ const AIAssistant: React.FC = () => {
           <div className="text-center space-y-8 pt-12">
              <div className="text-6xl animate-bounce">🕶️</div>
              <p className="text-gray-300 font-bold italic text-lg leading-relaxed">
-               {lang === 'ar' 
-                 ? 'أيوة يا بطل! أنا هنا عشان أظبطلك الـ Fit بتاعك. عايز تعرف إيه الجديد ولا نختار مقاسك؟' 
-                 : 'Wassup! I am here to fix your fit. Check the new drop or need size help?'}
+               {lang === 'ar' ? 'أيوة يا بطل! أنا هنا عشان أظبطلك الـ Fit بتاعك.' : 'Wassup! I am here to fix your fit.'}
              </p>
              <div className="grid grid-cols-1 gap-3 px-4">
-                {[
-                  { ar: 'وريني الـ Best Sellers 🔥', en: "Show me the Hype 🔥" },
-                  { ar: 'إيه أنسب طقم للخروج؟ 👕', en: 'Best outfit combo? 👕' },
-                  { ar: 'المقاسات نظامها إيه؟ 📏', en: 'How is the sizing? 📏' }
-                ].map((s, idx) => (
-                  <button 
-                    key={idx}
-                    onClick={() => setInput(lang === 'ar' ? s.ar : s.en)}
-                    className="text-xs font-black border-2 border-primary/20 bg-primary/5 px-6 py-4 rounded-2xl hover:bg-primary hover:text-dark-950 transition-all text-white uppercase italic tracking-tighter"
-                  >
+                {[{ar: 'وريني الـ Best Sellers 🔥', en: "Show me the Hype 🔥"}, {ar: 'إيه أنسب طقم للخروج؟ 👕', en: 'Best outfit combo? 👕'}].map((s, idx) => (
+                  <button key={idx} onClick={() => setInput(lang === 'ar' ? s.ar : s.en)} className="text-xs font-black border-2 border-primary/20 bg-primary/5 px-6 py-4 rounded-2xl hover:bg-primary hover:text-dark-950 transition-all text-white uppercase italic">
                     {lang === 'ar' ? s.ar : s.en}
                   </button>
                 ))}
@@ -148,46 +123,19 @@ const AIAssistant: React.FC = () => {
         )}
         {messages.map((m, idx) => (
           <div key={idx} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[85%] px-6 py-4 rounded-3xl text-sm font-bold leading-relaxed ${
-              m.role === 'user' 
-                ? 'bg-primary text-dark-900 rounded-tr-none shadow-lg' 
-                : 'glass border-white/10 text-gray-200 rounded-tl-none'
-            }`}>
+            <div className={`max-w-[85%] px-6 py-4 rounded-3xl text-sm font-bold ${m.role === 'user' ? 'bg-primary text-dark-950' : 'glass border-white/10 text-gray-200'}`}>
               {m.text}
             </div>
           </div>
         ))}
-        {isTyping && (
-          <div className="flex justify-start">
-            <div className="glass px-6 py-4 rounded-3xl rounded-tl-none">
-              <div className="flex gap-2">
-                <div className="w-2 h-2 bg-primary rounded-full animate-bounce" />
-                <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.2s]" />
-                <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:0.4s]" />
-              </div>
-            </div>
-          </div>
-        )}
+        {isTyping && <div className="flex gap-2 p-4"><div className="w-2 h-2 bg-primary rounded-full animate-bounce" /></div>}
       </div>
 
       <div className="p-6 bg-dark-900 border-t border-white/5">
         <div className="flex gap-3">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-            placeholder={lang === 'ar' ? 'اكتب أي حاجة...' : 'Type your vibe...'}
-            className="flex-1 bg-white/5 border-2 border-white/10 rounded-2xl px-6 py-4 text-sm focus:border-primary outline-none text-white font-bold transition-all"
-          />
-          <button 
-            onClick={handleSend}
-            disabled={isTyping || !input.trim()}
-            className="w-14 h-14 bg-primary text-dark-950 rounded-2xl flex items-center justify-center hover:scale-110 active:scale-95 disabled:opacity-50 transition-all shadow-xl"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
-              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-            </svg>
+          <input type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} placeholder={lang === 'ar' ? 'اكتب أي حاجة...' : 'Type your vibe...'} className="flex-1 bg-white/5 border-2 border-white/10 rounded-2xl px-6 py-4 text-sm focus:border-primary outline-none text-white font-bold" />
+          <button onClick={handleSend} disabled={isTyping || !input.trim()} className="w-14 h-14 bg-primary text-dark-950 rounded-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" /></svg>
           </button>
         </div>
       </div>
