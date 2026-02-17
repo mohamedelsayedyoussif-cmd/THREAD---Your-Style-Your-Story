@@ -1,8 +1,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI } from "@google/genai";
-import { useLanguage } from './LanguageProvider';
-import { PRODUCTS } from '../lib/products';
+import { useLanguage } from './LanguageProvider.tsx';
+import { PRODUCTS } from '../lib/products.ts';
 
 const AIAssistant: React.FC = () => {
   const { lang, region } = useLanguage();
@@ -14,51 +14,57 @@ const AIAssistant: React.FC = () => {
 
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
     }
   }, [messages, isTyping]);
 
   const handleSend = async () => {
-    if (!input.trim() || isTyping) return;
+    const userMsg = input.trim();
+    if (!userMsg || isTyping) return;
 
-    const userMessage = input.trim();
     setInput('');
-    setMessages(prev => [...prev, { role: 'user', text: userMessage }]);
+    setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
     setIsTyping(true);
 
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       
       const productContext = PRODUCTS.map(p => 
-        `${p.nameEn}: ${region === 'EG' ? p.price + ' EGP' : p.priceSAR + ' SAR'}. ${p.badgeEn} item.`
-      ).join(' ');
+        `${p.nameEn}: ${region === 'EG' ? p.price + ' EGP' : p.priceSAR + ' SAR'}. Status: ${p.badgeEn}.`
+      ).join('\n');
 
       const systemInstruction = `
-        You are "THREAD STYLIST", the coolest streetwear expert. 
-        Persona: Chill, fashion-forward, hype-beast friend. Use slang like "Vibe", "Drop", "Fit", "Fire", "جامد", "فاجر".
-        Context: User is in ${region === 'EG' ? 'Egypt 🇪🇬' : 'Saudi Arabia 🇸🇦'}. 
+        You are "THREAD STYLIST", the coolest streetwear expert for the brand THREAD.
+        Persona: Chill, hype-beast friend. Use slang like "Vibe", "Fit", "Fire", "جامد", "فاجر".
+        Region: ${region === 'EG' ? 'Egypt 🇪🇬' : 'Saudi Arabia 🇸🇦'}.
         Language: ${lang === 'ar' ? 'Egyptian Street Arabic' : 'English Streetwear Slang'}.
-        Rules:
-        1. Recommend Outfits (Combos of products).
-        2. Size help: If they want a baggy look, tell them to size up.
-        3. Be extremely enthusiastic about the brand THREAD.
-        4. Knowledge: ${productContext}.
-        5. Keep it short and punchy with lots of emojis.
+        Inventory: ${productContext}
+        Goal: Help users find the best fit, suggest combos, and answer questions about sizes.
+        Tone: Very enthusiastic about THREAD. Keep responses short and full of emojis.
       `;
 
+      // API Call using the correct generation parameters
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
-        contents: [
-          { role: 'user', parts: [{ text: systemInstruction }] },
-          ...messages.map(m => ({ role: m.role, parts: [{ text: m.text }] })),
-          { role: 'user', parts: [{ text: userMessage }] }
-        ],
+        contents: messages.concat({ role: 'user', text: userMsg }).map(m => ({
+          role: m.role,
+          parts: [{ text: m.text }]
+        })),
+        config: {
+          systemInstruction: systemInstruction,
+          temperature: 0.8,
+          topP: 0.95,
+        },
       });
 
       const aiText = response.text || "Vibe check failed. Try again! ⚡";
       setMessages(prev => [...prev, { role: 'model', text: aiText }]);
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'model', text: "Server's down, stay tuned! ⚡" }]);
+      console.error("AI Error:", error);
+      setMessages(prev => [...prev, { role: 'model', text: "Vibe check lost. Stay tuned! ⚡" }]);
     } finally {
       setIsTyping(false);
     }
@@ -74,7 +80,6 @@ const AIAssistant: React.FC = () => {
              </span>
           </div>
         </div>
-
         <button
           onClick={() => setIsOpen(true)}
           className="relative w-16 h-16 bg-dark-950 text-primary flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-500 shadow-[0_0_40px_rgba(0,242,255,0.3)] group border-2 border-primary rounded-2xl rotate-45 overflow-visible"
@@ -109,7 +114,7 @@ const AIAssistant: React.FC = () => {
         {messages.length === 0 && (
           <div className="text-center space-y-8 pt-12">
              <div className="text-6xl animate-bounce">🕶️</div>
-             <p className="text-gray-300 font-bold italic text-lg leading-relaxed">
+             <p className="text-gray-300 font-bold italic text-lg leading-relaxed px-4">
                {lang === 'ar' ? 'أيوة يا بطل! أنا هنا عشان أظبطلك الـ Fit بتاعك.' : 'Wassup! I am here to fix your fit.'}
              </p>
              <div className="grid grid-cols-1 gap-3 px-4">
@@ -133,8 +138,15 @@ const AIAssistant: React.FC = () => {
 
       <div className="p-6 bg-dark-900 border-t border-white/5">
         <div className="flex gap-3">
-          <input type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} placeholder={lang === 'ar' ? 'اكتب أي حاجة...' : 'Type your vibe...'} className="flex-1 bg-white/5 border-2 border-white/10 rounded-2xl px-6 py-4 text-sm focus:border-primary outline-none text-white font-bold" />
-          <button onClick={handleSend} disabled={isTyping || !input.trim()} className="w-14 h-14 bg-primary text-dark-950 rounded-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+          <input 
+            type="text" 
+            value={input} 
+            onChange={(e) => setInput(e.target.value)} 
+            onKeyDown={(e) => e.key === 'Enter' && handleSend()} 
+            placeholder={lang === 'ar' ? 'اكتب أي حاجة...' : 'Type your vibe...'} 
+            className="flex-1 bg-white/5 border-2 border-white/10 rounded-2xl px-6 py-4 text-sm focus:border-primary outline-none text-white font-bold" 
+          />
+          <button onClick={handleSend} disabled={isTyping || !input.trim()} className="w-14 h-14 bg-primary text-dark-900 rounded-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all disabled:opacity-50">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" /></svg>
           </button>
         </div>
