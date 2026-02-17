@@ -6,116 +6,101 @@ import { useLanguage } from '../components/LanguageProvider';
 const Hero: React.FC = () => {
   const { lang, region } = useLanguage();
 
+  const marqueeText = lang === 'ar' 
+    ? [
+        "ثريد - ستريت وير بريميوم",
+        "تراث أصلي",
+        region === 'EG' ? "القاهرة العالمية 🇪🇬" : "الرياض الراقية 🇸🇦",
+        "أجود أنواع الأقمشة",
+        "تصميمات حصرية"
+      ]
+    : [
+        "THREAD PREMIUM STREETWEAR",
+        "AUTHENTIC HERITAGE",
+        region === 'EG' ? "GLOBAL CAIRO 🇪🇬" : "ELITE RIYADH 🇸🇦",
+        "PREMIUM TEXTILES",
+        "EXCLUSIVE DROPS"
+      ];
+
   return (
-    <section id="home" className="relative min-h-[95vh] flex items-center pt-24 overflow-hidden bg-dark-950">
-      {/* Background VFX */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-50" />
-        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none" />
+    <section className="relative min-h-[85vh] flex items-center pt-20 pb-12 overflow-hidden bg-white dark:bg-dark-950 transition-colors duration-500">
+      {/* Background Layers */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute top-[-5%] left-[-5%] w-[70vw] h-[70vw] bg-primary/5 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute inset-0 opacity-10 dark:opacity-15 mix-blend-overlay">
+          <img 
+            src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&q=80&w=1920" 
+            className="w-full h-full object-cover grayscale brightness-50"
+            alt=""
+          />
+        </div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 grid lg:grid-cols-12 gap-12 items-center w-full">
-        {/* Text Content */}
-        <div className="lg:col-span-7 space-y-10 text-center lg:text-start">
-          <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full glass border-primary/30 text-primary font-black text-xs tracking-[0.2em] uppercase animate-pulse">
-            <span className="w-2 h-2 bg-primary rounded-full" />
-            {lang === 'ar' ? 'أقوى دروب لعام 2025 وصل 🔥' : 'THE ULTIMATE 2025 DROP IS HERE 🔥'}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 w-full">
+        <div className="flex flex-col items-center text-center space-y-6">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-primary text-[9px] font-black uppercase tracking-[0.3em] animate-slide-up shadow-lg border border-primary/10">
+            <span className="w-1.5 h-1.5 bg-primary rounded-full animate-ping" />
+            {lang === 'ar' 
+              ? `إصدارات حصرية - ${region === 'EG' ? 'مصر 🇪🇬' : 'المملكة 🇸🇦'}` 
+              : `LIMITED DROPS - ${region === 'EG' ? 'EGYPT 🇪🇬' : 'KSA 🇸🇦'}`}
           </div>
 
-          <h1 className="text-7xl sm:text-8xl lg:text-[10rem] font-black leading-[0.85] tracking-tighter text-white uppercase italic">
+          {/* Headline - Scaled Down for Elegance */}
+          <h1 className="text-5xl sm:text-7xl md:text-8xl font-heading leading-[0.85] italic uppercase tracking-tighter animate-slide-up [animation-delay:0.2s] text-dark-950 dark:text-white">
             {lang === 'ar' ? (
-              <>
-                <span className="block">مش مجرد</span>
-                <span className="text-primary text-glow block">هدوم. ⚡</span>
-              </>
+              <div className="flex flex-col select-none">
+                <span className="opacity-20">أناقة</span>
+                <span className="text-primary text-glow -mt-2 md:-mt-4">
+                  {region === 'EG' ? 'متمردة.' : 'فاخرة.'}
+                </span>
+              </div>
             ) : (
-              <>
-                <span className="block">NOT JUST</span>
-                <span className="text-primary text-glow block">CLOTHES. ⚡</span>
-              </>
+              <div className="flex flex-col select-none">
+                <span className="opacity-20">ICONIC</span>
+                <span className="text-primary text-glow -mt-2 md:-mt-4">LEGACY.</span>
+              </div>
             )}
           </h1>
 
-          <p className="text-xl sm:text-2xl text-gray-400 max-w-xl mx-auto lg:mx-0 font-bold tracking-tight">
+          {/* Subheadline - More Concise */}
+          <p className="max-w-xl text-base md:text-xl text-gray-600 dark:text-gray-400 font-bold italic animate-slide-up [animation-delay:0.4s] px-4 leading-relaxed">
             {lang === 'ar' 
-              ? 'براند مصري بيفهم في الستريت وير. خامات تقيلة، قصة مظبوطة، وسعر في المتناول.'
-              : 'Egyptian streetwear at its peak. Heavy fabrics, perfect fits, and hype vibes only.'}
+              ? 'البراند اللي بيحدد قواعد الستريت وير في المنطقة.' 
+              : 'The Brand Redefining Streetwear Standards.'}
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start pt-4">
+          {/* CTAs - Refined Sizes */}
+          <div className="flex flex-col sm:flex-row gap-4 pt-4 animate-slide-up [animation-delay:0.6s] w-full sm:w-auto px-12">
             <Link 
               to="/collections" 
-              className="px-12 py-6 bg-primary text-dark-950 font-black rounded-full shadow-[0_0_50px_rgba(0,242,255,0.4)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 text-xl group italic uppercase tracking-tighter"
+              className="group relative px-10 py-4 bg-primary text-white dark:text-black font-black rounded-xl text-base uppercase tracking-tight hover:scale-105 transition-all shadow-xl shadow-primary/20 text-center font-heading overflow-hidden"
             >
-              {lang === 'ar' ? 'الحق التشكيلة' : 'GRAB THE DROP'}
-              <svg className="w-6 h-6 group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
-                <path d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
+              <span className="relative z-10">{lang === 'ar' ? 'تسوق الآن 🔥' : 'SHOP NOW 🔥'}</span>
             </Link>
-            <Link 
-              to="/size-guide" 
-              className="px-12 py-6 glass border-white/10 text-white font-black rounded-full hover:bg-white/10 transition-all text-xl uppercase tracking-tighter italic"
+            <button 
+              onClick={() => document.getElementById('size-guide')?.scrollIntoView({ behavior: 'smooth' })}
+              className="px-10 py-4 glass text-dark-950 dark:text-white font-black rounded-xl text-base uppercase tracking-tight hover:bg-black/5 dark:hover:bg-white/10 transition-all text-center border border-dark-950/10 dark:border-white/20 font-heading"
             >
-              {lang === 'ar' ? 'دليل المقاسات' : 'SIZE GUIDE'}
-            </Link>
+              {lang === 'ar' ? 'المقاسات' : 'SIZING'}
+            </button>
           </div>
-
-          {/* Rapid Stats */}
-          <div className="flex justify-center lg:justify-start items-center gap-10 pt-10 border-t border-white/5">
-             <div className="text-center lg:text-start">
-                <div className="text-3xl font-black text-white italic">+50K</div>
-                <div className="text-[10px] text-gray-500 font-black uppercase tracking-widest">{lang === 'ar' ? 'وحش ثريد' : 'THREAD BEASTS'}</div>
-             </div>
-             <div className="w-px h-10 bg-white/10" />
-             <div className="text-center lg:text-start">
-                <div className="text-3xl font-black text-white italic">100%</div>
-                <div className="text-[10px] text-gray-500 font-black uppercase tracking-widest">{lang === 'ar' ? 'قطن مصري' : 'EGY COTTON'}</div>
-             </div>
-             <div className="w-px h-10 bg-white/10" />
-             <div className="text-center lg:text-start flex items-center gap-2">
-                <span className="text-3xl">🇪🇬</span>
-                <span className="text-3xl">🇸🇦</span>
-             </div>
-          </div>
-        </div>
-
-        {/* Visual Showcase */}
-        <div className="lg:col-span-5 relative hidden lg:block">
-           <div className="relative z-10 w-full aspect-[4/5] rounded-[3rem] overflow-hidden border-2 border-primary/20 shadow-[0_0_80px_rgba(0,242,255,0.1)] group animate-float-slow">
-              <img 
-                src="https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?auto=format&fit=crop&q=80&w=800" 
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                alt="New Arrival Fashion" 
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-dark-950 via-transparent to-transparent opacity-60" />
-              <div className="absolute bottom-8 left-8 right-8">
-                <div className="glass p-6 rounded-3xl border-primary/30">
-                  <span className="text-primary font-black text-xs uppercase tracking-[0.3em]">Featured Outfit</span>
-                  <h4 className="text-2xl font-black text-white italic">THE URBAN GHOST HOODIE</h4>
-                </div>
-              </div>
-           </div>
-           {/* Cyberpunk Decor */}
-           <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-[100px] animate-pulse" />
-           <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-accent-neon/10 rounded-full blur-[100px]" />
         </div>
       </div>
 
-      {/* Marquee Text Strip */}
-      <div className="absolute bottom-0 left-0 w-full bg-primary text-dark-950 py-4 overflow-hidden rotate-[-1deg] translate-y-2 z-20">
-        <div className="marquee-container flex">
-          <div className="marquee-content flex gap-12 text-2xl font-black uppercase italic items-center whitespace-nowrap">
-            {Array(10).fill(0).map((_, i) => (
-              <React.Fragment key={i}>
-                <span>THREAD STREETWEAR 🇪🇬</span>
-                <span className="text-dark-950/30">★</span>
-                <span>LIMITED DROPS ONLY ⚡</span>
-                <span className="text-dark-950/30">★</span>
-                <span>SAUDI ARABIA SHIP 🇸🇦</span>
-                <span className="text-dark-950/30">★</span>
-              </React.Fragment>
-            ))}
-          </div>
+      {/* Marquee Footer - Slimmer */}
+      <div className="absolute bottom-4 left-0 right-0 z-20 overflow-hidden py-4 border-y border-dark-950/5 dark:border-white/5 glass bg-white/30 dark:bg-dark-950/30 backdrop-blur-sm">
+        <div className={`flex whitespace-nowrap ${lang === 'ar' ? 'animate-marquee-rtl' : 'animate-marquee'}`}>
+          {Array(8).fill(0).map((_, i) => (
+            <div key={i} className="flex gap-10 items-center mx-6 text-[8px] font-black uppercase italic text-dark-950/30 dark:text-white/30 tracking-[0.2em]">
+              {marqueeText.map((text, idx) => (
+                <React.Fragment key={idx}>
+                  <span>{text}</span>
+                  <span className="text-primary text-lg">✦</span>
+                </React.Fragment>
+              ))}
+            </div>
+          ))}
         </div>
       </div>
     </section>

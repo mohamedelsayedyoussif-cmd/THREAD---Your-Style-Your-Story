@@ -1,16 +1,17 @@
 
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useLocation, useNavigate, Link } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { LanguageProvider, useLanguage } from './components/LanguageProvider.tsx';
+import { CartProvider, useCart } from './context/CartContext.tsx';
 import Navbar from './components/Navbar.tsx';
 import Footer from './components/Footer.tsx';
 import Hero from './sections/Hero.tsx';
 import TrustBar from './sections/TrustBar.tsx';
-import AboutStory from './sections/AboutStory.tsx';
 import WhyUs from './sections/WhyUs.tsx';
-import HelpCenter from './sections/HelpCenter.tsx';
 import FAQ from './sections/FAQ.tsx';
 import SizeGuide from './sections/SizeGuide.tsx';
+import AboutStory from './sections/AboutStory.tsx';
+import PaymentMethods from './sections/PaymentMethods.tsx';
 import Contact from './pages/Contact.tsx';
 import ProductCard from './components/ProductCard.tsx';
 import ProductDetail from './pages/ProductDetail.tsx';
@@ -28,216 +29,187 @@ import Checkout from './pages/Checkout.tsx';
 import QuickViewModal from './components/QuickViewModal.tsx';
 import FloatingWhatsApp from './components/FloatingWhatsApp.tsx';
 import AIAssistant from './components/AIAssistant.tsx';
-import { Product, ProductColor, CartItem } from './types.ts';
+import AnnouncementBar from './components/AnnouncementBar.tsx';
+import CategoryChips from './components/CategoryChips.tsx';
+import FlashSale from './sections/FlashSale.tsx';
+import StyleQuiz from './sections/StyleQuiz.tsx';
+import ReviewsUGC from './sections/ReviewsUGC.tsx';
+import Newsletter from './sections/Newsletter.tsx';
+import MobileBottomNav from './components/MobileBottomNav.tsx';
+import { Product, ProductColor } from './types.ts';
 import { PRODUCTS } from './lib/products.ts';
 
-// Utility to handle scrolling to sections or top of page
 const ScrollManager = () => {
   const { pathname, state } = useLocation();
-  
   useEffect(() => {
     if (state && (state as any).scrollTo) {
       const id = (state as any).scrollTo;
       setTimeout(() => {
         const element = document.getElementById(id);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+          const navOffset = 130; 
+          const bodyRect = document.body.getBoundingClientRect().top;
+          const elementRect = element.getBoundingClientRect().top;
+          const elementPosition = elementRect - bodyRect;
+          const offsetPosition = elementPosition - navOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
         }
-      }, 100);
+      }, 200);
     } else {
       window.scrollTo(0, 0);
     }
   }, [pathname, state]);
-
   return null;
-};
-
-const SectionHeader: React.FC<{ 
-  titleAr: string; 
-  titleEn: string; 
-  badgeAr?: string; 
-  badgeEn?: string;
-  showLink?: boolean;
-}> = ({ titleAr, titleEn, badgeAr, badgeEn, showLink = true }) => {
-  const { lang } = useLanguage();
-  return (
-    <div className="mb-12 flex flex-col md:flex-row justify-between items-end gap-6">
-      <div className="flex flex-col items-start text-start">
-        {badgeAr && (
-          <span className="text-primary font-black uppercase tracking-[0.3em] text-[10px] mb-2">
-            {lang === 'ar' ? badgeAr : badgeEn}
-          </span>
-        )}
-        <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-white">
-          {lang === 'ar' ? titleAr : titleEn}
-        </h2>
-        <div className="w-16 h-1.5 bg-primary mt-4 rounded-full" />
-      </div>
-      
-      {showLink && (
-        <Link 
-          to="/collections" 
-          className="text-sm font-bold text-gray-400 hover:text-primary transition-colors flex items-center gap-2 group"
-        >
-          {lang === 'ar' ? 'عرض الكل' : 'View All'}
-          <svg className={`w-4 h-4 transition-transform group-hover:translate-x-1 ${lang === 'ar' ? 'rotate-180 group-hover:-translate-x-1' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
-        </Link>
-      )}
-    </div>
-  );
 };
 
 const HomePage: React.FC<{ onQuickView: (p: Product) => void }> = ({ onQuickView }) => {
   const { lang } = useLanguage();
+  
+  const bestSellers = PRODUCTS.filter(p => p.tags.includes('Best Seller') || p.badgeEn === 'Best Seller');
+  const newArrivals = PRODUCTS.filter(p => p.badgeEn?.includes('New') || p.tags.includes('New Arrival'));
+  const menSection = PRODUCTS.filter(p => p.gender === 'men');
+  const womenSection = PRODUCTS.filter(p => p.gender === 'women');
 
-  // Categorize products for sections
-  const newArrivals = PRODUCTS.filter(p => p.badgeEn === 'NEW').slice(0, 4);
-  const mensCollection = PRODUCTS.filter(p => p.gender === 'men' && p.category === 'clothing').slice(0, 4);
-  const womensCollection = PRODUCTS.filter(p => p.gender === 'women' && p.category === 'clothing').slice(0, 4);
-  const accessories = PRODUCTS.filter(p => p.category === 'accessories').slice(0, 4);
+  // Unified Section Heading Class - Scaled down for elegance
+  const sectionHeadingClass = "text-3xl md:text-5xl font-black mb-10 uppercase italic tracking-tighter font-heading text-dark-950 dark:text-white text-glow";
 
   return (
-    <div className="min-h-screen bg-dark-900">
+    <div className="flex flex-col">
+      <Hero />
+      <TrustBar />
+      <CategoryChips />
+      
+      <section id="best-sellers" className="py-16 px-4 scroll-mt-[180px]">
+        <div className="max-w-7xl mx-auto">
+          <h2 className={sectionHeadingClass}>
+            {lang === 'ar' ? 'الأكثر مبيعاً 🔥' : 'Best Sellers 🔥'}
+          </h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+            {bestSellers.map(p => <ProductCard key={p.id} product={p} onQuickView={onQuickView} />)}
+          </div>
+        </div>
+      </section>
+
+      <FlashSale />
+
+      <section id="men" className="py-16 px-4 bg-gray-50 dark:bg-dark-900 scroll-mt-[180px]">
+        <div className="max-w-7xl mx-auto">
+          <h2 className={sectionHeadingClass}>
+            {lang === 'ar' ? 'قسم الرجال 👟' : 'Men Section 👟'}
+          </h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+            {menSection.map(p => <ProductCard key={p.id} product={p} onQuickView={onQuickView} />)}
+          </div>
+        </div>
+      </section>
+
+      <section id="new" className="py-16 px-4 scroll-mt-[180px]">
+        <div className="max-w-7xl mx-auto">
+          <h2 className={sectionHeadingClass}>
+            {lang === 'ar' ? 'وصل حديثاً ✨' : 'New Drops ✨'}
+          </h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+            {newArrivals.map(p => <ProductCard key={p.id} product={p} onQuickView={onQuickView} />)}
+          </div>
+        </div>
+      </section>
+
+      <section id="women" className="py-16 px-4 bg-gray-50 dark:bg-dark-900 scroll-mt-[180px]">
+        <div className="max-w-7xl mx-auto">
+          <h2 className={sectionHeadingClass}>
+            {lang === 'ar' ? 'قسم النساء 👗' : 'Women Section 👗'}
+          </h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+            {womenSection.map(p => <ProductCard key={p.id} product={p} onQuickView={onQuickView} />)}
+          </div>
+        </div>
+      </section>
+
+      <StyleQuiz />
+      <div id="about" className="scroll-mt-[180px]"><AboutStory /></div>
+      <WhyUs />
+      <div id="reviews" className="scroll-mt-[180px]"><ReviewsUGC /></div>
+      <SizeGuide />
+      <Newsletter />
+      <PaymentMethods />
+      <div id="faq" className="scroll-mt-[180px]"><FAQ /></div>
+      <Contact />
+    </div>
+  );
+};
+
+const AppContent = () => {
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [showToast, setShowToast] = useState(false);
+  const { addToCart } = useCart();
+  const { lang } = useLanguage();
+
+  const handleAddToCart = (p: Product, c: ProductColor, s: string, q: number) => {
+    addToCart(p, c, s, q);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+  };
+
+  return (
+    <div className="min-h-screen bg-white dark:bg-dark-950 text-dark-950 dark:text-white selection:bg-primary selection:text-white overflow-x-hidden pt-[36px] transition-colors duration-500">
+      <AnnouncementBar />
       <Navbar />
-      <main>
-        <Hero />
-        <TrustBar />
-        
-        {/* 1. New Arrivals Section */}
-        <section id="new" className="py-24 px-4 scroll-mt-20">
-          <div className="max-w-7xl mx-auto">
-            <SectionHeader titleAr="وصل حديثاً" titleEn="New Arrivals" badgeAr="الأحدث" badgeEn="Latest" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {newArrivals.map((p, idx) => (
-                <ProductCard key={p.id} product={p} onQuickView={onQuickView} priority={idx < 4} />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* 2. Accessories Section */}
-        <section id="accessories" className="py-24 px-4 bg-dark-800 scroll-mt-20 relative overflow-hidden">
-          <div className="absolute top-0 end-0 w-96 h-96 bg-primary/10 rounded-full blur-[120px]" />
-          <div className="max-w-7xl mx-auto">
-            <SectionHeader titleAr="الإكسسوارات" titleEn="Accessories" badgeAr="عصري" badgeEn="Trendy" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {accessories.map((p) => (
-                <ProductCard key={p.id} product={p} onQuickView={onQuickView} />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* 3. Men's Section */}
-        <section id="men" className="py-24 px-4 scroll-mt-20">
-          <div className="max-w-7xl mx-auto">
-            <SectionHeader titleAr="تشكيلة الرجال" titleEn="Men's Collection" badgeAr="رجالي" badgeEn="Men" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {mensCollection.map((p) => (
-                <ProductCard key={p.id} product={p} onQuickView={onQuickView} />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <WhyUs />
-        <AboutStory />
-
-        {/* 4. Women's Section */}
-        <section id="women" className="py-24 px-4 bg-dark-800 scroll-mt-20">
-          <div className="max-w-7xl mx-auto">
-            <SectionHeader titleAr="تشكيلة النساء" titleEn="Women's Collection" badgeAr="حريمي" badgeEn="Women" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {womensCollection.map((p) => (
-                <ProductCard key={p.id} product={p} onQuickView={onQuickView} />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <FAQ />
-        <SizeGuide />
-        <HelpCenter />
-        <Contact />
+      <ScrollManager />
+      <main className="relative z-10 pb-20 lg:pb-0">
+        <Routes>
+          <Route path="/" element={<HomePage onQuickView={setQuickViewProduct} />} />
+          <Route path="/collections" element={<Collections products={PRODUCTS} onQuickView={setQuickViewProduct} />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/product/:id" element={<ProductDetail products={PRODUCTS} onAddToCartDirect={(p, c, s) => handleAddToCart(p, c, s, 1)} />} />
+          <Route path="/wishlist" element={<WishlistPage products={PRODUCTS} onQuickView={setQuickViewProduct} />} />
+          <Route path="/size-guide" element={<SizeGuidePage />} />
+          <Route path="/faq" element={<FAQPage />} />
+          <Route path="/shipping" element={<ShippingPage />} />
+          <Route path="/returns" element={<ReturnsPage />} />
+          <Route path="/track" element={<TrackOrderPage />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+        </Routes>
       </main>
       <Footer />
+      
+      {quickViewProduct && (
+        <QuickViewModal 
+          product={quickViewProduct} 
+          onClose={() => setQuickViewProduct(null)} 
+          onAddToCart={handleAddToCart} 
+        />
+      )}
+      
+      <FloatingWhatsApp />
+      <AIAssistant onQuickView={setQuickViewProduct} />
+      <MobileBottomNav />
+      
+      {showToast && (
+        <div className="fixed top-28 right-4 z-[200] animate-in fade-in slide-in-from-right-10">
+          <div className="bg-primary text-white px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-3 font-black border border-white/10">
+            <span className="text-sm">✅</span>
+            <p className="italic uppercase tracking-tighter text-[10px]">
+              {lang === 'ar' ? 'تمت الإضافة!' : 'Added to Bag!'}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 const App: React.FC = () => {
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
-  const [showToast, setShowToast] = useState(false);
-
-  const addToCart = (product: Product, color: ProductColor, size: string) => {
-    const cartId = `${product.id}-${color.id}-${size}`;
-    setCart(prev => {
-      const existing = prev.find(item => item.id === cartId);
-      if (existing) {
-        return prev.map(item => 
-          item.id === cartId ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      }
-      return [...prev, { id: cartId, product, selectedColor: color, selectedSize: size, quantity: 1 }];
-    });
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
-  };
-
-  const updateQuantity = (id: string, delta: number) => {
-    setCart(prev => prev.map(item => 
-      item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item
-    ));
-  };
-
-  const removeFromCart = (id: string) => {
-    setCart(prev => prev.filter(item => item.id !== id));
-  };
-
   return (
     <LanguageProvider>
-      <ScrollManager />
-      <Routes>
-        <Route path="/" element={<HomePage onQuickView={setQuickViewProduct} />} />
-        <Route path="/collections" element={<Collections products={PRODUCTS} onAddToCart={(p) => setQuickViewProduct(p)} />} />
-        <Route path="/cart" element={<Cart cartItems={cart} onUpdateQuantity={updateQuantity} onRemove={removeFromCart} />} />
-        <Route path="/checkout" element={<Checkout cartItems={cart} />} />
-        <Route path="/product/:id" element={<ProductDetail products={PRODUCTS} onAddToCartDirect={addToCart} />} />
-        <Route path="/wishlist" element={<WishlistPage products={PRODUCTS} onQuickView={setQuickViewProduct} />} />
-        
-        {/* Info Routes */}
-        <Route path="/size-guide" element={<SizeGuidePage />} />
-        <Route path="/faq" element={<FAQPage />} />
-        <Route path="/shipping" element={<ShippingPage />} />
-        <Route path="/returns" element={<ReturnsPage />} />
-        <Route path="/track" element={<TrackOrderPage />} />
-        <Route path="/privacy" element={<PrivacyPolicyPage />} />
-        <Route path="/terms" element={<TermsPage />} />
-      </Routes>
-
-      {/* Global Modals & Helpers */}
-      {quickViewProduct && (
-        <QuickViewModal 
-          product={quickViewProduct} 
-          onClose={() => setQuickViewProduct(null)} 
-          onAddToCart={addToCart}
-        />
-      )}
-
-      <FloatingWhatsApp />
-      <AIAssistant />
-
-      {showToast && (
-        <div className="fixed top-24 right-4 z-[110] animate-bounce-in">
-           <div className="bg-white text-dark-900 p-4 rounded-2xl shadow-2xl flex items-center gap-4 border-l-4 border-primary">
-              <span className="text-2xl">✅</span>
-              <p className="font-bold">تمت الإضافة للسلة!</p>
-           </div>
-        </div>
-      )}
+      <CartProvider>
+        <AppContent />
+      </CartProvider>
     </LanguageProvider>
   );
 };

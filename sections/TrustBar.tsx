@@ -3,52 +3,52 @@ import React from 'react';
 import { useLanguage } from '../components/LanguageProvider';
 
 const TrustBar: React.FC = () => {
-  const { lang } = useLanguage();
+  const { lang, region } = useLanguage();
 
   const features = [
     { 
-      icon: '🇪🇬', 
-      titleAr: 'صنع في مصر', 
-      titleEn: 'Made in Egypt', 
-      descAr: 'بأيدي أمهر المصنعين المصريين', 
-      descEn: 'By skilled Egyptian craftsmen' 
+      icon: '🧵', 
+      titleAr: 'قطن 100% ثقيل', 
+      titleEn: '100% Heavy Cotton', 
+      descAr: 'خامة تعيش وتستحمل', 
+      descEn: 'Built to last' 
     },
     { 
       icon: '🚚', 
-      titleAr: 'توصيل سريع', 
-      titleEn: 'Fast Delivery', 
-      descAr: 'خلال 2-3 أيام عمل', 
-      descEn: 'Within 2-3 business days' 
+      titleAr: lang === 'ar' ? 'توصيل سريع' : 'Fast Shipping', 
+      titleEn: 'Fast Shipping', 
+      descAr: region === 'EG' ? 'خلال 48 ساعة بمصر' : 'خلال 3-5 أيام بالمملكة', 
+      descEn: region === 'EG' ? '48h in Egypt' : '3-5 days in KSA' 
     },
     { 
       icon: '💳', 
-      titleAr: 'دفع آمن', 
-      titleEn: 'Secure Payment', 
-      descAr: 'COD وتقسيط متعدد', 
-      descEn: 'COD & Multi-Installments' 
+      titleAr: 'دفع عند الاستلام', 
+      titleEn: 'COD Available', 
+      descAr: 'ادفع لما تستلم وتتأكد', 
+      descEn: 'Pay on delivery' 
     },
     { 
-      icon: '⭐', 
-      titleAr: 'ضمان الجودة', 
-      titleEn: 'Quality Guarantee', 
-      descAr: 'خامات قطنية 100%', 
-      descEn: '100% Cotton Materials' 
+      icon: '🔄', 
+      titleAr: 'استبدال مجاني', 
+      titleEn: 'Free Exchange', 
+      descAr: 'لو المقاس مش مضبوط', 
+      descEn: 'Free size swaps' 
     },
   ];
 
   return (
-    <div className="bg-primary/5 border-y border-primary/10 py-8 md:py-12 px-4">
-      <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+    <div className="bg-primary/5 border-y border-white/5 py-10 md:py-16 px-4">
+      <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8">
         {features.map((f, i) => (
-          <div key={i} className="flex flex-col items-center text-center gap-2 md:gap-3 group">
-            <div className={`text-3xl md:text-4xl group-hover:scale-125 transition-transform duration-300 ${f.icon === '🇪🇬' ? 'drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]' : ''}`}>
+          <div key={i} className="flex flex-col items-center text-center gap-4 group">
+            <div className="text-4xl md:text-5xl group-hover:scale-125 transition-all duration-500 group-hover:rotate-12">
               {f.icon}
             </div>
-            <div>
-              <h4 className="font-bold text-sm md:text-lg text-white">
+            <div className="space-y-1">
+              <h4 className="font-black text-xs md:text-xl text-dark-950 dark:text-white uppercase italic tracking-tighter">
                 {lang === 'ar' ? f.titleAr : f.titleEn}
               </h4>
-              <p className="text-[10px] md:text-sm text-gray-400">
+              <p className="text-[9px] md:text-xs text-gray-500 font-bold uppercase tracking-widest opacity-60">
                 {lang === 'ar' ? f.descAr : f.descEn}
               </p>
             </div>

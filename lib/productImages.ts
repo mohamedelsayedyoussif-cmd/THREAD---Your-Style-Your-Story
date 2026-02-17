@@ -17,14 +17,24 @@ export const PRODUCT_IMAGES: Record<number, ProductImage> = {
     altEn: 'Premium essential white t-shirt',
   },
   3: {
+    src: 'https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&q=80&w=800',
+    altAr: 'جينز سليم فيت أزرق داكن',
+    altEn: 'Slim fit dark blue jeans',
+  },
+  4: {
     src: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800',
     altAr: 'بنطلون كارجو خاكي مريح بجودة عالية',
     altEn: 'Comfortable street cargo pants in khaki',
   },
-  4: {
+  9: {
     src: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=800',
     altAr: 'جاكيت فيرسيتي كلاسيكي',
     altEn: 'Classic Varsity Jacket',
+  },
+  10: {
+    src: 'https://images.unsplash.com/photo-1580487217487-12235e14d7d2?auto=format&fit=crop&q=80&w=800',
+    altAr: 'بنطلون جوجر رمادي نسائي',
+    altEn: 'Women grey street joggers',
   },
   11: {
     src: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&q=80&w=800',

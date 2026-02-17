@@ -7,16 +7,12 @@ import { useLanguage } from './LanguageProvider';
 interface Props {
   product: Product;
   onQuickView: (p: Product) => void;
-  priority?: boolean;
 }
 
-const ProductCard: React.FC<Props> = ({ product, onQuickView, priority = false }) => {
+const ProductCard: React.FC<Props> = ({ product, onQuickView }) => {
   const { lang, region } = useLanguage();
   const navigate = useNavigate();
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [activeColorIdx, setActiveColorIdx] = useState(0);
-  const [showAllColors, setShowAllColors] = useState(false);
 
   useEffect(() => {
     const wishlist = JSON.parse(localStorage.getItem('thread_wishlist') || '[]');
@@ -31,113 +27,79 @@ const ProductCard: React.FC<Props> = ({ product, onQuickView, priority = false }
       newWishlist = wishlist.filter((id: number) => id !== product.id);
     } else {
       newWishlist = [...wishlist, product.id];
-      setShowFeedback(true);
-      setTimeout(() => setShowFeedback(false), 2000);
     }
     localStorage.setItem('thread_wishlist', JSON.stringify(newWishlist));
     setIsWishlisted(!isWishlisted);
     window.dispatchEvent(new Event('wishlistUpdated'));
   };
 
-  const currentColor = product.colors[activeColorIdx] || product.colors[0];
-  const defaultImage = currentColor.images[0] || '';
-  const secondaryImage = currentColor.images[1] || defaultImage;
-  const currentPrice = region === 'EG' ? product.price : product.priceSAR;
-  const currency = region === 'EG' ? 'EGP' : 'SAR';
-
-  const visibleColors = showAllColors ? product.colors : product.colors.slice(0, 3);
-  const remainingColorsCount = product.colors.length - 3;
+  const currency = region === 'EG' ? (lang === 'ar' ? 'ج.م' : 'EGP') : (lang === 'ar' ? 'ر.س' : 'SAR');
+  const price = region === 'EG' ? product.price : product.priceSAR;
+  const oldPrice = region === 'EG' ? product.compareAtPrice : product.compareAtPriceSAR;
 
   return (
-    <div className="group relative flex flex-col gap-4">
-      {/* Image Container */}
-      <div 
-        onClick={() => navigate(`/product/${product.id}`)} 
-        className="relative aspect-[3/4] rounded-3xl overflow-hidden glass border-white/5 bg-dark-800 cursor-pointer"
-      >
+    <div 
+      className="group relative flex flex-col gap-3 cursor-pointer transition-all duration-500 rounded-2xl"
+      onClick={() => navigate(`/product/${product.id}`)}
+    >
+      <div className="relative aspect-[3/4] rounded-xl overflow-hidden glass border-dark-950/5 dark:border-white/5 transition-all duration-500 group-hover:shadow-[0_15px_30px_-10px_rgba(255,77,0,0.15)]">
+        {/* Main Image */}
         <img 
-          src={defaultImage} 
-          alt={lang === 'ar' ? product.nameAr : product.nameEn} 
-          loading={priority ? "eager" : "lazy"} 
-          className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" 
-        />
-        <img 
-          src={secondaryImage} 
-          alt="hover view" 
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-0 group-hover:opacity-100" 
+          src={product.colors[0].images[0]} 
+          alt={product.nameEn}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
         
-        {(product.badgeAr || product.badgeEn) && (
-          <div className="absolute top-4 start-4 z-10">
-            <span className="bg-primary text-dark-900 text-[10px] font-black uppercase px-3 py-1.5 rounded-full tracking-widest shadow-xl">
+        {/* Badges */}
+        <div className="absolute top-3 start-3 z-10">
+          {(product.badgeAr || product.badgeEn) && (
+            <span className="bg-primary text-white dark:text-black px-2.5 py-1 rounded-full text-[8px] font-black uppercase tracking-wider shadow-md italic">
               {lang === 'ar' ? product.badgeAr : product.badgeEn}
             </span>
-          </div>
-        )}
+          )}
+        </div>
 
+        {/* Favorite Button */}
         <button 
-          onClick={toggleWishlist} 
-          className={`absolute top-4 end-4 z-20 w-10 h-10 rounded-full glass border-white/10 flex items-center justify-center transition-all duration-300 hover:scale-110 ${isWishlisted ? 'text-primary' : 'text-white'}`}
+          onClick={toggleWishlist}
+          className={`absolute top-3 end-3 z-10 w-9 h-9 rounded-lg glass border-dark-950/5 dark:border-white/10 flex items-center justify-center transition-all hover:scale-110 active:scale-90 ${isWishlisted ? 'bg-primary text-white border-primary shadow-lg' : 'text-dark-950 dark:text-white hover:bg-white/10'}`}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill={isWishlisted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill={isWishlisted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5">
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
           </svg>
         </button>
 
-        <div className="absolute inset-0 bg-dark-900/40 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center p-6 z-20">
+        {/* Quick Look Overlay */}
+        <div className="absolute inset-0 bg-dark-950/10 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center p-4 backdrop-blur-[1px]">
           <button 
-            onClick={(e) => { e.stopPropagation(); onQuickView(product); }} 
-            className="bg-white text-dark-900 font-bold px-8 py-4 rounded-2xl flex items-center justify-center gap-2 translate-y-4 group-hover:translate-y-0 transition-transform hover:bg-primary"
+            onClick={(e) => { e.stopPropagation(); onQuickView(product); }}
+            className="w-full bg-white text-dark-950 py-2.5 rounded-lg font-black uppercase tracking-wider translate-y-2 group-hover:translate-y-0 transition-all duration-300 text-[9px] shadow-lg hover:bg-primary hover:text-white"
           >
-            {lang === 'ar' ? 'عرض سريع' : 'Quick View'}
+            {lang === 'ar' ? 'نظرة سريعة ⚡' : 'QUICK LOOK ⚡'}
           </button>
         </div>
       </div>
 
-      {/* Details Container */}
-      <div className="space-y-1 px-1 text-center sm:text-start">
-        <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start gap-1 sm:gap-4">
-          <h3 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors line-clamp-1">
-            {lang === 'ar' ? product.nameAr : product.nameEn}
-          </h3>
-          <span className="text-xl font-black text-primary shrink-0">{currentPrice} {currency}</span>
-        </div>
-        <p className="text-sm text-gray-400 line-clamp-1 italic mb-2">
-          {lang === 'ar' ? product.descriptionAr : product.descriptionEn}
-        </p>
-
-        {/* Color Swatches */}
-        <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
-          {visibleColors.map((color, idx) => (
-            <button
-              key={color.id}
-              onClick={(e) => {
-                e.stopPropagation();
-                setActiveColorIdx(idx);
-              }}
-              aria-label={lang === 'ar' ? color.nameAr : color.nameEn}
-              className={`w-5 h-5 rounded-full border-2 p-0.5 transition-all hover:scale-110 ${
-                activeColorIdx === idx ? 'border-primary ring-1 ring-primary ring-offset-1 ring-offset-dark-950' : 'border-white/10'
-              }`}
-            >
-              <div 
-                className="w-full h-full rounded-full border border-white/5" 
-                style={{ backgroundColor: color.hex }}
-              />
-            </button>
-          ))}
-          
-          {!showAllColors && remainingColorsCount > 0 && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowAllColors(true);
-              }}
-              className="text-[10px] font-black text-gray-500 uppercase tracking-widest hover:text-primary transition-colors"
-            >
-              +{remainingColorsCount} {lang === 'ar' ? 'أكثر' : 'more'}
-            </button>
-          )}
+      {/* Info Section */}
+      <div className="px-1 py-1 space-y-1">
+        <div className="flex justify-between items-start gap-2">
+          <div className="flex flex-col flex-1">
+             <span className="text-[7px] font-black text-primary/70 uppercase tracking-widest mb-0.5">
+               {product.category}
+             </span>
+             <h3 className="text-sm md:text-base font-black text-dark-950 dark:text-white italic leading-tight group-hover:text-primary transition-colors uppercase tracking-tight">
+                {lang === 'ar' ? product.nameAr : product.nameEn}
+             </h3>
+          </div>
+          <div className="flex flex-col items-end shrink-0">
+            {oldPrice && (
+              <span className="text-[9px] text-gray-400 line-through font-bold opacity-60">{oldPrice}</span>
+            )}
+            <span className="text-base md:text-lg font-black text-primary italic font-price leading-none">
+              {price}
+            </span>
+            <span className="text-[7px] uppercase font-black opacity-30 tracking-widest">{currency}</span>
+          </div>
         </div>
       </div>
     </div>

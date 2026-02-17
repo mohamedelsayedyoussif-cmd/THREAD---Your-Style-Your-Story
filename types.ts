@@ -19,8 +19,8 @@ export interface Product {
   category: 'clothing' | 'accessories';
   nameAr: string;
   nameEn: string;
-  price: number; // Price in EGP
-  priceSAR: number; // Price in SAR
+  price: number; 
+  priceSAR: number;
   compareAtPrice?: number;
   compareAtPriceSAR?: number;
   rating: number;
@@ -31,10 +31,11 @@ export interface Product {
   descriptionEn: string;
   colors: ProductColor[];
   sizes: string[];
+  tags: string[];
 }
 
 export interface CartItem {
-  id: string; // Composite ID: productId-colorId-sizeId
+  id: string; 
   product: Product;
   selectedColor: ProductColor;
   selectedSize: string;

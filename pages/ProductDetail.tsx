@@ -3,8 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useLanguage } from '../components/LanguageProvider';
 import { PRODUCT_IMAGES } from '../lib/productImages';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 import { Product, ProductColor } from '../types';
 
 interface Props {
@@ -14,7 +12,7 @@ interface Props {
 
 const ProductDetail: React.FC<Props> = ({ products, onAddToCartDirect }) => {
   const { id } = useParams();
-  const { lang } = useLanguage();
+  const { lang, region } = useLanguage();
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedSize, setSelectedSize] = useState<string>('');
@@ -61,14 +59,13 @@ const ProductDetail: React.FC<Props> = ({ products, onAddToCartDirect }) => {
   if (!product || !selectedColor) return null;
 
   const imageData = PRODUCT_IMAGES[product.id];
+  const currency = region === 'EG' ? 'EGP' : 'SAR';
+  const price = region === 'EG' ? product.price : product.priceSAR;
 
   return (
-    <div className="min-h-screen bg-dark-900">
-      <Navbar />
-      
+    <div className="min-h-screen bg-dark-950">
       <main className="pt-32 pb-24 px-4">
         <div className="max-w-7xl mx-auto">
-          {/* Back Button */}
           <button 
             onClick={() => navigate(-1)}
             className="mb-8 flex items-center gap-2 text-primary font-bold hover:underline group"
@@ -80,35 +77,33 @@ const ProductDetail: React.FC<Props> = ({ products, onAddToCartDirect }) => {
           </button>
 
           <div className="grid lg:grid-cols-2 gap-16 items-start">
-            {/* Image Gallery */}
             <div className="relative aspect-[3/4] rounded-[3rem] overflow-hidden glass border-white/10 group">
               <img 
                 src={selectedColor.images[0] || imageData?.src} 
                 alt={lang === 'ar' ? product.nameAr : product.nameEn}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover animate-fade-in"
               />
-              <div className="absolute top-6 start-6">
-                <span className="bg-primary text-dark-900 px-4 py-2 rounded-full font-black text-sm uppercase tracking-widest shadow-2xl">
-                  {lang === 'ar' ? product.badgeAr : product.badgeEn}
-                </span>
-              </div>
+              {(product.badgeAr || product.badgeEn) && (
+                <div className="absolute top-6 start-6">
+                  <span className="bg-primary text-dark-900 px-4 py-2 rounded-full font-black text-sm uppercase tracking-widest shadow-2xl">
+                    {lang === 'ar' ? product.badgeAr : product.badgeEn}
+                  </span>
+                </div>
+              )}
             </div>
 
-            {/* Info */}
             <div className="space-y-10">
               <div className="space-y-4">
-                <h1 className="text-5xl font-black text-white leading-tight">
+                <h1 className="text-5xl font-black text-white leading-tight italic uppercase tracking-tighter">
                   {lang === 'ar' ? product.nameAr : product.nameEn}
                 </h1>
                 <div className="flex items-center gap-6">
-                  <span className="text-4xl font-black text-primary">{product.price} EGP</span>
+                  <span className="text-4xl font-black text-primary italic">{price} {currency}</span>
                   {product.compareAtPrice && (
-                    <span className="text-xl text-gray-500 line-through">{product.compareAtPrice} EGP</span>
+                    <span className="text-xl text-gray-500 line-through">
+                      {(region === 'EG' ? product.compareAtPrice : product.compareAtPriceSAR)} {currency}
+                    </span>
                   )}
-                </div>
-                <div className="flex items-center gap-2 text-accent-neon font-bold">
-                  <span>★ {product.rating}</span>
-                  <span className="text-gray-500 text-sm">({product.reviewsCount} {lang === 'ar' ? 'تقييم' : 'Reviews'})</span>
                 </div>
               </div>
 
@@ -116,9 +111,8 @@ const ProductDetail: React.FC<Props> = ({ products, onAddToCartDirect }) => {
                 {lang === 'ar' ? product.descriptionAr : product.descriptionEn}
               </p>
 
-              {/* Color Select */}
               <div className="space-y-4">
-                <h4 className="font-bold text-white uppercase tracking-widest text-sm">
+                <h4 className="font-bold text-white uppercase tracking-widest text-xs opacity-60">
                   {lang === 'ar' ? 'اختر اللون' : 'Select Color'}
                 </h4>
                 <div className="flex flex-wrap gap-3">
@@ -129,7 +123,7 @@ const ProductDetail: React.FC<Props> = ({ products, onAddToCartDirect }) => {
                       className={`px-6 py-3 rounded-xl font-bold border-2 transition-all ${
                         selectedColor.id === color.id 
                         ? 'border-primary bg-primary/10 text-primary' 
-                        : 'border-white/5 glass text-gray-400'
+                        : 'border-white/5 glass text-gray-400 hover:border-primary/30'
                       }`}
                     >
                       {lang === 'ar' ? color.nameAr : color.nameEn}
@@ -138,13 +132,12 @@ const ProductDetail: React.FC<Props> = ({ products, onAddToCartDirect }) => {
                 </div>
               </div>
 
-              {/* Size Select */}
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <h4 className="font-bold text-white uppercase tracking-widest text-sm">
+                  <h4 className="font-bold text-white uppercase tracking-widest text-xs opacity-60">
                     {lang === 'ar' ? 'اختر المقاس' : 'Select Size'}
                   </h4>
-                  <Link to="/size-guide" className="text-xs text-primary font-bold hover:underline">
+                  <Link to="/size-guide" className="text-[10px] text-primary font-bold hover:underline">
                     {lang === 'ar' ? 'دليل المقاسات' : 'Size Guide'}
                   </Link>
                 </div>
@@ -165,11 +158,10 @@ const ProductDetail: React.FC<Props> = ({ products, onAddToCartDirect }) => {
                 </div>
               </div>
 
-              {/* Actions */}
               <div className="pt-6 flex flex-col sm:flex-row gap-4">
                 <button 
                   onClick={handleAddToCart}
-                  className="flex-1 bg-primary text-dark-900 font-black py-6 rounded-2xl text-xl shadow-2xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-tighter"
+                  className="flex-1 bg-primary text-dark-900 font-black py-6 rounded-2xl text-xl shadow-2xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-tighter"
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                     <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
@@ -179,40 +171,21 @@ const ProductDetail: React.FC<Props> = ({ products, onAddToCartDirect }) => {
                 </button>
                 <button 
                   onClick={toggleWishlist}
-                  className={`px-10 py-6 glass border-white/10 rounded-2xl font-bold transition-all flex items-center justify-center hover:scale-105 active:scale-95 ${isWishlisted ? 'text-primary' : 'text-white'}`}
+                  className={`px-10 py-6 glass border-white/10 rounded-2xl font-bold transition-all flex items-center justify-center hover:scale-[1.02] active:scale-95 ${isWishlisted ? 'text-primary' : 'text-white'}`}
                 >
                   <svg 
                     width="24" height="24" viewBox="0 0 24 24" 
                     fill={isWishlisted ? "currentColor" : "none"} 
                     stroke="currentColor" strokeWidth="2.5"
-                    className={isWishlisted ? "drop-shadow-[0_0_8px_rgba(0,242,255,0.5)]" : ""}
                   >
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                   </svg>
                 </button>
               </div>
-
-              {/* Trust badges mini */}
-              <div className="pt-10 border-t border-white/5 grid grid-cols-3 gap-4 text-center">
-                <div className="space-y-2">
-                  <span className="block text-2xl">🚚</span>
-                  <span className="text-[10px] uppercase font-bold text-gray-500">{lang === 'ar' ? 'شحن سريع' : 'Fast Shipping'}</span>
-                </div>
-                <div className="space-y-2">
-                  <span className="block text-2xl">🛡️</span>
-                  <span className="text-[10px] uppercase font-bold text-gray-500">{lang === 'ar' ? 'ضمان 14 يوم' : '14 Days Warranty'}</span>
-                </div>
-                <div className="space-y-2">
-                  <span className="block text-2xl">✨</span>
-                  <span className="text-[10px] uppercase font-bold text-gray-500">{lang === 'ar' ? 'خامة قطن 100%' : '100% Cotton'}</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 };

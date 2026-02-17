@@ -20,14 +20,33 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [region, setRegion] = useState<Region>(() => {
     return (localStorage.getItem('thread_region') as Region) || 'EG';
   });
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    const saved = localStorage.getItem('thread_dark');
+    return saved !== null ? saved === 'true' : true; 
+  });
 
   useEffect(() => {
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.className = isDark ? 'dark' : '';
+    document.body.setAttribute('lang', lang);
     localStorage.setItem('thread_lang', lang);
-  }, [lang, isDark]);
+    
+    // Update Document Title based on language
+    const titles = {
+      ar: 'ثريد | أناقة.. حضور.. فخامة ⚡',
+      en: 'THREAD | ICONIC STREETWEAR ⚡'
+    };
+    document.title = titles[lang];
+  }, [lang]);
+
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('thread_dark', String(isDark));
+  }, [isDark]);
 
   useEffect(() => {
     localStorage.setItem('thread_region', region);
