@@ -27,7 +27,7 @@ const TrackOrderPage: React.FC = () => {
       const demoResult = {
         orderId: orderNum,
         status: 2, // 0: Received, 1: Processing, 2: Out for delivery, 3: Delivered
-        date: new Date().toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US'),
+        date: new Date().toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-EG'),
         estDelivery: lang === 'ar' ? 'خلال 24 ساعة' : 'Within 24 hours'
       };
       setResult(demoResult);
@@ -63,7 +63,7 @@ const TrackOrderPage: React.FC = () => {
                     placeholder="#12345"
                     value={orderNum}
                     onChange={(e) => setOrderNum(e.target.value)}
-                    className="w-full bg-white/5 border-2 border-white/10 rounded-2xl px-6 py-4 focus:border-primary outline-none font-bold"
+                    className="w-full bg-white/5 border-2 border-white/10 rounded-2xl px-6 py-4 focus:border-primary outline-none font-bold text-white"
                   />
                 </div>
                 <div className="space-y-2">
@@ -74,7 +74,7 @@ const TrackOrderPage: React.FC = () => {
                     placeholder="01xxxxxxxxx"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full bg-white/5 border-2 border-white/10 rounded-2xl px-6 py-4 focus:border-primary outline-none font-bold"
+                    className="w-full bg-white/5 border-2 border-white/10 rounded-2xl px-6 py-4 focus:border-primary outline-none font-bold text-white"
                   />
                 </div>
               </div>
@@ -88,7 +88,7 @@ const TrackOrderPage: React.FC = () => {
 
            <div className="text-center p-4 bg-accent-neon/10 rounded-2xl border border-accent-neon/20">
               <p className="text-xs text-accent-neon font-bold uppercase tracking-widest">
-                {lang === 'ar' ? '⚠️ هذه نسخة تجريبية — سيتم الربط قريباً بنظام الشحن الفعلي' : '⚠️ DEMO PAGE — Real shipping integration coming soon'}
+                {lang === 'ar' ? '🇪🇬 سيتم الربط قريباً بنظام الشحن المحلي' : '🇪🇬 Real local shipping integration coming soon'}
               </p>
            </div>
         </section>

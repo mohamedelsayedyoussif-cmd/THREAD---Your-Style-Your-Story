@@ -13,38 +13,28 @@ export const PRODUCT_IMAGES: Record<number, ProductImage> = {
   },
   2: {
     src: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&q=80&w=800',
-    altAr: 'طقم تيشيرتات أساسية (أسود، أبيض، رمادي)',
-    altEn: 'Essential t-shirt pack in black, white, and grey',
+    altAr: 'تيشيرت أساسي أبيض بريميوم',
+    altEn: 'Premium essential white t-shirt',
   },
   3: {
-    src: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&q=80&w=800',
-    altAr: 'جينز سليم فيت كحلي غامق بجودة عالية',
-    altEn: 'High-quality dark blue slim fit denim jeans',
+    src: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800',
+    altAr: 'بنطلون كارجو خاكي مريح بجودة عالية',
+    altEn: 'Comfortable street cargo pants in khaki',
   },
   4: {
-    src: 'https://images.unsplash.com/photo-1511105612320-2e62a04dd044?auto=format&fit=crop&q=80&w=800',
-    altAr: 'بنطلون كارجو خاكي مريح بجيوب جانبية',
-    altEn: 'Comfortable khaki cargo pants with side pockets',
+    src: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=800',
+    altAr: 'جاكيت فيرسيتي كلاسيكي',
+    altEn: 'Classic Varsity Jacket',
   },
-  7: {
-    src: 'https://images.unsplash.com/photo-1576188973526-0e5d7047b0cf?auto=format&fit=crop&q=80&w=800',
-    altAr: 'بلوفر حريمي واسع بيج ناعم مريح',
-    altEn: 'Soft and comfortable beige oversized women sweater',
+  11: {
+    src: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&q=80&w=800',
+    altAr: 'كاب تراكر عصري مع شعار مطرز',
+    altEn: 'Modern trucker cap with embroidered logo',
   },
-  8: {
-    src: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800',
-    altAr: 'جينز موم فيت بخصر مرتفع لون أزرق فاتح',
-    altEn: 'High-waist mom jeans in light blue',
-  },
-  9: {
-    src: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?auto=format&fit=crop&q=80&w=800',
-    altAr: 'هودي قصير وردي عصري للبنات',
-    altEn: 'Trendy pink cropped hoodie for women',
-  },
-  10: {
-    src: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&q=80&w=800',
-    altAr: 'فستان ماكسي مشجر بألوان صيفية مبهجة',
-    altEn: 'Vibrant floral maxi dress with summer pattern',
+  12: {
+    src: 'https://images.unsplash.com/photo-1597484662317-9bd773ee16ba?auto=format&fit=crop&q=80&w=800',
+    altAr: 'حقيبة توت قماشية صديقة للبيئة',
+    altEn: 'Eco-friendly canvas tote bag',
   }
 };
 

@@ -15,14 +15,32 @@ const QuickViewModal: React.FC<Props> = ({ product, onClose, onAddToCart }) => {
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [activeImage, setActiveImage] = useState<string>(product.colors[0].images[0]);
   const [isAdding, setIsAdding] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
   useEffect(() => {
     setActiveImage(selectedColor.images[0]);
   }, [selectedColor]);
 
+  useEffect(() => {
+    const wishlist = JSON.parse(localStorage.getItem('thread_wishlist') || '[]');
+    setIsWishlisted(wishlist.includes(product.id));
+  }, [product.id]);
+
+  const toggleWishlist = () => {
+    const wishlist = JSON.parse(localStorage.getItem('thread_wishlist') || '[]');
+    let newWishlist;
+    if (isWishlisted) {
+      newWishlist = wishlist.filter((wid: number) => wid !== product.id);
+    } else {
+      newWishlist = [...wishlist, product.id];
+    }
+    localStorage.setItem('thread_wishlist', JSON.stringify(newWishlist));
+    setIsWishlisted(!isWishlisted);
+    window.dispatchEvent(new Event('wishlistUpdated'));
+  };
+
   const handleAddToCart = () => {
     if (!selectedSize) {
-      // Small shake animation could go here
       return;
     }
     setIsAdding(true);
@@ -120,7 +138,6 @@ const QuickViewModal: React.FC<Props> = ({ product, onClose, onAddToCart }) => {
                       className="w-full h-full rounded-full border border-white/20" 
                       style={{ background: color.hex }}
                     />
-                    {/* Tooltip */}
                     <span className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-dark-900 text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
                        {lang === 'ar' ? color.nameAr : color.nameEn}
                     </span>
@@ -159,11 +176,11 @@ const QuickViewModal: React.FC<Props> = ({ product, onClose, onAddToCart }) => {
             </div>
 
             {/* CTA */}
-            <div className="pt-8">
+            <div className="pt-8 flex gap-4">
               <button
                 onClick={handleAddToCart}
                 disabled={!selectedSize || isAdding}
-                className="w-full py-5 rounded-2xl font-black uppercase tracking-widest text-lg flex items-center justify-center gap-3 transition-all relative overflow-hidden group disabled:opacity-50 disabled:cursor-not-allowed bg-primary text-dark-900 shadow-xl shadow-primary/20"
+                className="flex-1 py-5 rounded-2xl font-black uppercase tracking-widest text-lg flex items-center justify-center gap-3 transition-all relative overflow-hidden group disabled:opacity-50 disabled:cursor-not-allowed bg-primary text-dark-900 shadow-xl shadow-primary/20"
               >
                 {isAdding ? (
                    <span className="flex items-center gap-2">
@@ -182,6 +199,20 @@ const QuickViewModal: React.FC<Props> = ({ product, onClose, onAddToCart }) => {
                     {lang === 'ar' ? 'أضف إلى السلة' : 'Add to Cart'}
                   </>
                 )}
+              </button>
+              
+              <button 
+                onClick={toggleWishlist}
+                className={`p-5 rounded-2xl glass border-white/10 transition-all hover:scale-105 active:scale-95 ${isWishlisted ? 'text-primary' : 'text-white'}`}
+              >
+                <svg 
+                  width="24" height="24" viewBox="0 0 24 24" 
+                  fill={isWishlisted ? "currentColor" : "none"} 
+                  stroke="currentColor" strokeWidth="2.5"
+                  className={isWishlisted ? "drop-shadow-[0_0_8px_rgba(0,242,255,0.5)]" : ""}
+                >
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
               </button>
             </div>
           </div>

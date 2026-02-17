@@ -6,6 +6,7 @@ import SocialContactIcons from './SocialContactIcons';
 
 const Footer: React.FC = () => {
   const { lang } = useLanguage();
+  const phoneNumber = "+20 103 377 6986";
 
   const helpLinks = [
     { id: 'size', ar: 'دليل المقاسات', en: 'Size Guide', path: '/size-guide' },
@@ -23,13 +24,16 @@ const Footer: React.FC = () => {
           <Link to="/" className="text-3xl font-black text-primary italic">THREAD</Link>
           <p className="text-gray-400 leading-relaxed max-w-xs">
             {lang === 'ar' 
-              ? 'العلامة التجارية الأسرع نمواً لملابس الشارع في مصر والخليج. جودة عالية بأسعار تنافسية.'
-              : 'The fastest-growing streetwear brand in Egypt & Gulf. Premium quality at competitive prices.'}
+              ? 'العلامة التجارية الأسرع نمواً لملابس الشارع في مصر 🇪🇬 والسعودية 🇸🇦. جودة عالية بأسعار تنافسية.'
+              : 'The fastest-growing streetwear brand in Egypt 🇪🇬 & KSA 🇸🇦. Premium quality at competitive prices.'}
           </p>
-          <div className="space-y-2">
+          <div className="space-y-3">
             <p className="text-sm font-bold flex items-center gap-2">
-              📍 {lang === 'ar' ? 'القاهرة، مصر' : 'Cairo, Egypt'}
+              📍 {lang === 'ar' ? 'القاهرة، مصر 🇪🇬' : 'Cairo, Egypt 🇪🇬'}
             </p>
+            <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} className="text-lg font-black text-primary flex items-center gap-2 italic hover:underline">
+              📞 {phoneNumber}
+            </a>
           </div>
         </div>
 
@@ -46,7 +50,7 @@ const Footer: React.FC = () => {
           </ul>
         </div>
 
-        {/* Help Links (Updated) */}
+        {/* Help Links */}
         <div className="space-y-6">
           <h3 className="text-lg font-bold border-b border-primary/20 pb-2">
             {lang === 'ar' ? 'روابط المساعدة' : 'Help Links'}
@@ -74,8 +78,8 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
         <p>© {new Date().getFullYear()} THREAD EG. {lang === 'ar' ? 'جميع الحقوق محفوظة.' : 'All rights reserved.'}</p>
         <div className="flex gap-6 font-bold uppercase tracking-widest">
-          <Link to="#" className="hover:text-white transition-colors">{lang === 'ar' ? 'سياسة الخصوصية' : 'Privacy'}</Link>
-          <Link to="#" className="hover:text-white transition-colors">{lang === 'ar' ? 'الأحكام' : 'Terms'}</Link>
+          <Link to="/privacy" className="hover:text-white transition-colors">{lang === 'ar' ? 'سياسة الخصوصية' : 'Privacy'}</Link>
+          <Link to="/terms" className="hover:text-white transition-colors">{lang === 'ar' ? 'الأحكام' : 'Terms'}</Link>
         </div>
       </div>
     </footer>

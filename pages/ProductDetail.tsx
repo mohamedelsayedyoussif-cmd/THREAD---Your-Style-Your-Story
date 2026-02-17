@@ -1,24 +1,25 @@
 
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useLanguage } from '../components/LanguageProvider';
 import { PRODUCT_IMAGES } from '../lib/productImages';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { Product } from '../types';
+import { Product, ProductColor } from '../types';
 
 interface Props {
   products: Product[];
-  onAddToCart: (p: Product) => void;
+  onAddToCartDirect: (p: Product, color: ProductColor, size: string) => void;
 }
 
-const ProductDetail: React.FC<Props> = ({ products, onAddToCart }) => {
+const ProductDetail: React.FC<Props> = ({ products, onAddToCartDirect }) => {
   const { id } = useParams();
   const { lang } = useLanguage();
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedSize, setSelectedSize] = useState<string>('');
-  const [selectedColor, setSelectedColor] = useState<string>('');
+  const [selectedColor, setSelectedColor] = useState<ProductColor | null>(null);
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
   useEffect(() => {
     const found = products.find(p => p.id === Number(id));
@@ -30,7 +31,34 @@ const ProductDetail: React.FC<Props> = ({ products, onAddToCart }) => {
     window.scrollTo(0, 0);
   }, [id, products]);
 
-  if (!product) return null;
+  useEffect(() => {
+    if (product) {
+      const wishlist = JSON.parse(localStorage.getItem('thread_wishlist') || '[]');
+      setIsWishlisted(wishlist.includes(product.id));
+    }
+  }, [product]);
+
+  const toggleWishlist = () => {
+    if (!product) return;
+    const wishlist = JSON.parse(localStorage.getItem('thread_wishlist') || '[]');
+    let newWishlist;
+    if (isWishlisted) {
+      newWishlist = wishlist.filter((wid: number) => wid !== product.id);
+    } else {
+      newWishlist = [...wishlist, product.id];
+    }
+    localStorage.setItem('thread_wishlist', JSON.stringify(newWishlist));
+    setIsWishlisted(!isWishlisted);
+    window.dispatchEvent(new Event('wishlistUpdated'));
+  };
+
+  const handleAddToCart = () => {
+    if (product && selectedColor && selectedSize) {
+      onAddToCartDirect(product, selectedColor, selectedSize);
+    }
+  };
+
+  if (!product || !selectedColor) return null;
 
   const imageData = PRODUCT_IMAGES[product.id];
 
@@ -55,7 +83,7 @@ const ProductDetail: React.FC<Props> = ({ products, onAddToCart }) => {
             {/* Image Gallery */}
             <div className="relative aspect-[3/4] rounded-[3rem] overflow-hidden glass border-white/10 group">
               <img 
-                src={imageData?.src} 
+                src={selectedColor.images[0] || imageData?.src} 
                 alt={lang === 'ar' ? product.nameAr : product.nameEn}
                 className="w-full h-full object-cover"
               />
@@ -74,18 +102,18 @@ const ProductDetail: React.FC<Props> = ({ products, onAddToCart }) => {
                 </h1>
                 <div className="flex items-center gap-6">
                   <span className="text-4xl font-black text-primary">{product.price} EGP</span>
-                  {product.originalPrice && (
-                    <span className="text-xl text-gray-500 line-through">{product.originalPrice} EGP</span>
+                  {product.compareAtPrice && (
+                    <span className="text-xl text-gray-500 line-through">{product.compareAtPrice} EGP</span>
                   )}
                 </div>
                 <div className="flex items-center gap-2 text-accent-neon font-bold">
                   <span>★ {product.rating}</span>
-                  <span className="text-gray-500 text-sm">({product.reviews} {lang === 'ar' ? 'تقييم' : 'Reviews'})</span>
+                  <span className="text-gray-500 text-sm">({product.reviewsCount} {lang === 'ar' ? 'تقييم' : 'Reviews'})</span>
                 </div>
               </div>
 
               <p className="text-xl text-gray-400 leading-relaxed font-light italic">
-                {lang === 'ar' ? product.descAr : product.descEn}
+                {lang === 'ar' ? product.descriptionAr : product.descriptionEn}
               </p>
 
               {/* Color Select */}
@@ -96,15 +124,15 @@ const ProductDetail: React.FC<Props> = ({ products, onAddToCart }) => {
                 <div className="flex flex-wrap gap-3">
                   {product.colors.map(color => (
                     <button
-                      key={color}
+                      key={color.id}
                       onClick={() => setSelectedColor(color)}
-                      className={`px-6 py-3 rounded-xl font-bold transition-all border-2 ${
-                        selectedColor === color 
+                      className={`px-6 py-3 rounded-xl font-bold border-2 transition-all ${
+                        selectedColor.id === color.id 
                         ? 'border-primary bg-primary/10 text-primary' 
-                        : 'border-white/5 glass text-gray-400 hover:border-primary/50'
+                        : 'border-white/5 glass text-gray-400'
                       }`}
                     >
-                      {color}
+                      {lang === 'ar' ? color.nameAr : color.nameEn}
                     </button>
                   ))}
                 </div>
@@ -116,9 +144,9 @@ const ProductDetail: React.FC<Props> = ({ products, onAddToCart }) => {
                   <h4 className="font-bold text-white uppercase tracking-widest text-sm">
                     {lang === 'ar' ? 'اختر المقاس' : 'Select Size'}
                   </h4>
-                  <a href="#size-guide" className="text-xs text-primary font-bold hover:underline">
+                  <Link to="/size-guide" className="text-xs text-primary font-bold hover:underline">
                     {lang === 'ar' ? 'دليل المقاسات' : 'Size Guide'}
-                  </a>
+                  </Link>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   {product.sizes.map(size => (
@@ -140,7 +168,7 @@ const ProductDetail: React.FC<Props> = ({ products, onAddToCart }) => {
               {/* Actions */}
               <div className="pt-6 flex flex-col sm:flex-row gap-4">
                 <button 
-                  onClick={() => onAddToCart(product)}
+                  onClick={handleAddToCart}
                   className="flex-1 bg-primary text-dark-900 font-black py-6 rounded-2xl text-xl shadow-2xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 uppercase tracking-tighter"
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
@@ -149,8 +177,16 @@ const ProductDetail: React.FC<Props> = ({ products, onAddToCart }) => {
                   </svg>
                   {lang === 'ar' ? 'أضف إلى السلة' : 'Add to Cart'}
                 </button>
-                <button className="px-10 py-6 glass border-white/10 rounded-2xl text-white font-bold hover:bg-white/5 transition-all flex items-center justify-center">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <button 
+                  onClick={toggleWishlist}
+                  className={`px-10 py-6 glass border-white/10 rounded-2xl font-bold transition-all flex items-center justify-center hover:scale-105 active:scale-95 ${isWishlisted ? 'text-primary' : 'text-white'}`}
+                >
+                  <svg 
+                    width="24" height="24" viewBox="0 0 24 24" 
+                    fill={isWishlisted ? "currentColor" : "none"} 
+                    stroke="currentColor" strokeWidth="2.5"
+                    className={isWishlisted ? "drop-shadow-[0_0_8px_rgba(0,242,255,0.5)]" : ""}
+                  >
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                   </svg>
                 </button>

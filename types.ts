@@ -2,6 +2,7 @@
 import React from 'react';
 
 export type Language = 'ar' | 'en';
+export type Region = 'EG' | 'KSA';
 
 export interface ProductColor {
   id: string;
@@ -14,11 +15,14 @@ export interface ProductColor {
 export interface Product {
   id: number;
   slug: string;
-  gender: 'men' | 'women';
+  gender: 'men' | 'women' | 'unisex';
+  category: 'clothing' | 'accessories';
   nameAr: string;
   nameEn: string;
-  price: number;
+  price: number; // Price in EGP
+  priceSAR: number; // Price in SAR
   compareAtPrice?: number;
+  compareAtPriceSAR?: number;
   rating: number;
   reviewsCount: number;
   badgeAr?: string;
